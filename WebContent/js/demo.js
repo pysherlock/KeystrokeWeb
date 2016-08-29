@@ -4,7 +4,7 @@
 
 var keystroke = function () {
 	//keystroke event
-	$("").keydown(function() {
+	$("#target").keydown(function() {
 		alert("handle for .keydown() called");
 	});
 }
@@ -24,4 +24,4 @@ $( "#other" ).click(function() {
   $( "#target" ).keydown();
 });
 
-$(document).ready(keystroke);
+//$(document).ready(keystroke);

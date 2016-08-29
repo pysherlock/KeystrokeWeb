@@ -1,0 +1,21 @@
+@CHARSET "ISO-8859-1";
+
+fieldset {
+  margin-bottom: 1em;
+}
+
+input {
+	display: block;
+	margin-bottom: .25em;
+}
+
+.button {
+	height: 60px;
+	width: 100px;
+	border-radius: 5px;
+	background-color: #69D2E7;
+	text-align: center;
+	color: #FFFFFF;
+	font-family: Verdana, Arial, Sans-Serif;
+	opacity: 0.5;
+}
