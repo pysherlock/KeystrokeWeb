@@ -4,43 +4,32 @@
 
 var keystroke = function () {
 	//keystroke event
-	$(document).keypress(function() {
-		alert("keypress related to the whole document");
-	})
+//	$(document).keypress(function() {
+//		alert("keypress related to the whole document");
+//	});
+	
 	$("input").keydown(function(event) {
-		alert("handle for .keydown() called");
-		$("#print-output").print("hello");
-		
+		alert("handle for .keydown() called " + event.which);
+		var keydown = event;
+		console.log(keydown);
+		//document.write(keydown);
+		document.getElementById("output").innerHTML="keydown";
+		document.getElementById("output").innerHTML=event.timeStamp;
+		//
 	});
 	
-	$("input").keyup(function() {
-		alert("handle for .keyup() called");
-	})
+	$("input").keyup(function(event) {
+		alert("handle for .keyup() called " + event.which);
+		var keyup = event;
+		console.log(keyup);
+		document.getElementById("output").innerHTML="keyup";
+
+	});
 	
-//	$("#target").keydown(function() {
-//		$("#print-output").print("hello keydown");
-//	});
-//	
-//	$("#triger").click(function() {
-//		$("#target").keydown();
-//		alert("hello keystroke");
+//	$("input").keypress(function(event) {
+//		alert("handle for .keypress() called " + event.which);
 //	});
 	
 }
 
 $(document).ready(keystroke);
-//var xTriggered = 0;
-//$( "#target" ).keydown(function( event ) {
-//  if ( event.which == 13 ) {
-//   event.preventDefault();
-//  }
-//  xTriggered++;
-//  var msg = "Handler for .keydown() called " + xTriggered + " time(s).";
-//  $.print( msg, "html" );
-//  $.print( event );
-//});
-//
-//$( "#other" ).click(function() {
-//  $( "#target" ).keydown();
-//});
-
