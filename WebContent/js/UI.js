@@ -1,11 +1,11 @@
 
 
 var UI = function() {
-	$('div').mouseenter(function(){
+	$('.button').mouseenter(function(){
 		$('div').fadeTo('fast', 1);
 	});
 
-	$('div').mouseleave(function(){
+	$('.button').mouseleave(function(){
 		$('div').fadeTo('fast', 0.5);
 	});
 };

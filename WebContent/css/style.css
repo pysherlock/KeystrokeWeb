@@ -1,15 +1,15 @@
 @CHARSET "ISO-8859-1";
 
-fieldset {
+ fieldset {
   margin-bottom: 1em;
 }
 
-input {
+ input {
 	display: block;
 	margin-bottom: .25em;
 }
 
-.button {
+.triger {
 	height: 60px;
 	width: 100px;
 	border-radius: 5px;
@@ -18,4 +18,8 @@ input {
 	color: #FFFFFF;
 	font-family: Verdana, Arial, Sans-Serif;
 	opacity: 0.5;
+}
+
+.print-output {
+	width: 100%;
 }
