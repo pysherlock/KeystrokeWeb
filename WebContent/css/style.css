@@ -8,13 +8,24 @@ body {
 	width: 100%;
 }
 
+h1 {
+	background-color: lightblue;
+	margin: auto;
+	width: 600px;
+	margin-bottom: 1em;
+}
+
  fieldset {
+  margin:auto;
   margin-bottom: 1em;
+  width: 600px;
 }
 
  input {
 	display: block;
 	margin-bottom: .25em;
+	width: 300px;
+	margin: auto;
 }
 
 .click {
@@ -28,8 +39,15 @@ body {
 	opacity: 0.5;
 }
 
+h2 {
+	margin: auto;
+	margin-top: 1.25em;
+}
+
 .print-output {
 	height: 100px;
-	width: 100px;
+	width: 600px;
 	background-color: lightblue;
+	margin: auto;
+	margin-top: 1em;
 }

@@ -9,22 +9,29 @@ var keystroke = function () {
 //	});
 	
 	$("input").keydown(function(event) {
-		alert("handle for .keydown() called " + event.which);
 		var keydown = event;
+		var keydown_time = keydown.timeStamp;
 		console.log(keydown);
-		//document.write(keydown);
-		document.getElementById("output").innerHTML="keydown";
-		document.getElementById("output").innerHTML=event.timeStamp;
-		//
+
+		$("input").keyup(function(event) {
+			var keyup = event;
+			var keyup_time = keyup.timeStamp;
+			var interval = keyup_time - keydown_time;
+			document.getElementById("output").innerHTML="keydown: " + keydown_time + "\n keyup_time: " + keyup_time + 
+										"  interval: " + interval;
+
+		});
+//		document.getElementById("output").innerHTML="keydown: " + keydown_time + "/nkeyup_time: " + keyup_time;
+	
 	});
 	
-	$("input").keyup(function(event) {
-		alert("handle for .keyup() called " + event.which);
-		var keyup = event;
-		console.log(keyup);
-		document.getElementById("output").innerHTML="keyup";
-
-	});
+//	$("input").keyup(function(event) {
+//		alert("handle for .keyup() called " + event.which);
+//		var keyup = event;
+//		console.log(keyup);
+//		document.getElementById("output").innerHTML="keyup";
+//
+//	});
 	
 //	$("input").keypress(function(event) {
 //		alert("handle for .keypress() called " + event.which);
