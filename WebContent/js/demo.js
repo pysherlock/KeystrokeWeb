@@ -4,9 +4,6 @@
 
 var keystroke = function () {
 	//keystroke event
-//	$(document).keypress(function() {
-//		alert("keypress related to the whole document");
-//	});
 	
 	$("input").keydown(function(event) {
 		var keydown = event;
@@ -24,18 +21,6 @@ var keystroke = function () {
 //		document.getElementById("output").innerHTML="keydown: " + keydown_time + "/nkeyup_time: " + keyup_time;
 	
 	});
-	
-//	$("input").keyup(function(event) {
-//		alert("handle for .keyup() called " + event.which);
-//		var keyup = event;
-//		console.log(keyup);
-//		document.getElementById("output").innerHTML="keyup";
-//
-//	});
-	
-//	$("input").keypress(function(event) {
-//		alert("handle for .keypress() called " + event.which);
-//	});
 	
 }
 
