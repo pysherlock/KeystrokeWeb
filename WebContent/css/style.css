@@ -15,6 +15,11 @@ h1 {
 	margin-bottom: 1em;
 }
 
+h2 {
+	margin: auto;
+	margin-top: 1.25em;
+}
+
  fieldset {
   margin:auto;
   margin-bottom: 1em;
@@ -37,11 +42,6 @@ h1 {
 	color: #FFFFFF;
 	font-family: Verdana, Arial, Sans-Serif;
 	opacity: 0.5;
-}
-
-h2 {
-	margin: auto;
-	margin-top: 1.25em;
 }
 
 .print-output {
