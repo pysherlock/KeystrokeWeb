@@ -43,8 +43,7 @@ var keystroke = function (field) {
 		}
 	});
 	
-	return Text;
-	
+	return Text;	
 }
 
 var main = function () {
@@ -53,7 +52,6 @@ var main = function () {
 	$('#triger').click(function() {
 		alert('Username: ' + Username + " Password: " + Password);
 	});
-	
 }
 
 $(document).ready(main);
