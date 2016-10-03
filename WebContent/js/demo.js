@@ -4,41 +4,85 @@
 
 var Username = new Array(), Password = new Array(); // records the keys that user types in
 
-var Pressed_KEY = new Array(), Released_KEY = new Array();
+var Pressed_Key = new Array(), Released_Key = new Array();
 
 var KD_time_username = new Array(), KU_time_username = new Array();
 var KD_time_pwd = new Array(), KU_time_pwd = new Array();
 var Feature_Username = new Array(), Feature_PWD = new Array();
 
-var index = -1;
+var Index = -1;
 
+function KEY(index, key, which, downtime, uptime) {
+	this.index = index;
+	this.key = key;
+	this.which = which;
+	this.time_D = downtime;
+	this.time_U = uptime;
+}
 
 var keystroke = function(field) {
-	var KEY = new Object();
-	var text = new Array();
+	var Key, text = new Array();
 	
 	$(field).keydown(function(event) {
-		index += 1;
-		KEY.index = index;
-		KEY.key = event.key;
-		KEY.time_D = event.timeStamp;
-		Pressed_Key.push(KEY);
+		Index += 1;
+		Key = new KEY(Index, event.key, event.which, event.timeStamp, null);
+		Pressed_Key.push(Key);
+		
+		console.log("Press: " + Key.key);
 		
 		text.push(event.key);
 	});
 	
 	$(field).keyup(function(event) {
-		for (i = 0; i < Pressed_KEY.length(); i++) {
-			item = Pressed_KEY[i];
-			if(item.key == event.key) {
+		for (i = 0; i < Pressed_Key.length; i++) {
+			console.log("Pressed_Key.length: " + Pressed_Key.length + " i: " + i);
+			item = Pressed_Key[i];
+			
+			//Look for the same key in Pressed key array and release them
+			//Deal with capital keys: delete the upper key from the Pressed array
+			if(item.which == event.which || item.which == event.which+32 || item.which == event.which-32) {
 				item.time_U = event.timeStamp;
-				Released_KEY.push(item);
-				Pressed_KEY.splice(i, 1); //Release the key
+				console.log("Release: " + item.key);
+				
+				//Release the key
+				//Add released key to Released array
+				Released_Key.push(item);
+				console.log("Released_Key");
+				console.log(Released_Key);
+
+				//Delete released key from the Pressed array
+				Pressed_Key.splice(i, 1);
+				console.log("Pressed_Key");
+				console.log(Pressed_Key);
+				
+				i--; //correct the index position since Pressed array's length reduce one 
 			}
 		}
 	});
+	
 	return text;
 }
+
+var main = function () {
+//	Username = keystroke("#username", KD_time_username, KU_time_username);
+//	Password = keystroke("#password", KD_time_pwd, KU_time_pwd);
+//	$('#triger').click(function() {
+//		alert("Username: " + Username + " feature: " + Feature_Username 
+//				+ " \nPassword: " + Password + " feature: " + Feature_Pwd);
+//	});
+	
+	Username = keystroke("#username");
+	Password = keystroke("#password");
+	
+	$('#triger').click(function() {
+		alert("Username: " + Username + " " 
+				+ " \nPassword: " + Password);
+	});
+}
+
+$(document).ready(main);
+
+//$(document).ready(keystroke);
 
 /*
 var keystroke = function(field, KD_time_vec, KU_time_vec) {
@@ -48,8 +92,7 @@ var keystroke = function(field, KD_time_vec, KU_time_vec) {
 	var KD_time, prev_KD_time, KU_time, prev_KU_time;
 	var Text = new Array();
 	
-	var KEY = new Object();
-	
+	var KEY = new Object();	
 	
 	//Key press event
 //	$(field).keydown(function(event) {
@@ -96,29 +139,6 @@ var keystroke = function(field, KD_time_vec, KU_time_vec) {
 //												+ " UDKL: " + UDKL + " UUKL: " + UUKL;
 //		}
 //	});
-	
 	return Text;
 }
 */
-
-var main = function () {
-//	Username = keystroke("#username", KD_time_username, KU_time_username);
-//	Password = keystroke("#password", KD_time_pwd, KU_time_pwd);
-//	$('#triger').click(function() {
-//		alert("Username: " + Username + " feature: " + Feature_Username 
-//				+ " \nPassword: " + Password + " feature: " + Feature_Pwd);
-//	});
-	
-	
-	Username = keystroke("#username");
-	Password = keystroke("#password");
-	
-	
-	$('#triger').click(function() {
-		alert("Username: " + Username + " \nPassword: " + Password);
-	})
-}
-
-$(document).ready(main);
-
-//$(document).ready(keystroke);
