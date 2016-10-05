@@ -4,11 +4,9 @@
 
 var Username = new Array(), Password = new Array(); // records the keys that user types in
 
-var Pressed_Key = new Array(), Released_Key = new Array();
-
 var KD_time_username = new Array(), KU_time_username = new Array();
 var KD_time_pwd = new Array(), KU_time_pwd = new Array();
-var Feature_Username = new Array(), Feature_PWD = new Array();
+var Feature_Username = new Array(), Feature_Password = new Array();
 
 var Index = -1;
 
@@ -20,8 +18,10 @@ function KEY(index, key, which, downtime, uptime) {
 	this.time_U = uptime;
 }
 
-var keystroke = function(field) {
-	var Key, text = new Array();
+var keystroke = function(field, Text) {
+	//Record the key which is being pressed and has been released
+	var Pressed_Key = new Array(), Released_Key = new Array(); 
+	var Key;
 	
 	$(field).keydown(function(event) {
 		Index += 1;
@@ -29,8 +29,7 @@ var keystroke = function(field) {
 		Pressed_Key.push(Key);
 		
 		console.log("Press: " + Key.key);
-		
-		text.push(event.key);
+		Text.push(event.key);
 	});
 	
 	$(field).keyup(function(event) {
@@ -60,19 +59,32 @@ var keystroke = function(field) {
 		}
 	});
 	
-	return text;
+	// remove Backspace and other keys that user deletes because of mistake
+	var length = Released_Key.length;
+	for(i = 0; i < length; i++) {
+		item = Released_Key[i];
+		if(item.which == 8) {
+			if(i == 0) {
+				Released_Key.splice(i, 1);
+				length--;
+				i--;
+			}
+			else {
+				Released_Key.splice(i-1, 2);
+				length-=2;
+				i-=2;
+			}
+		}
+	}
+	
+	//return text;
+	return Released_Key;
 }
 
 var main = function () {
-//	Username = keystroke("#username", KD_time_username, KU_time_username);
-//	Password = keystroke("#password", KD_time_pwd, KU_time_pwd);
-//	$('#triger').click(function() {
-//		alert("Username: " + Username + " feature: " + Feature_Username 
-//				+ " \nPassword: " + Password + " feature: " + Feature_Pwd);
-//	});
 	
-	Username = keystroke("#username");
-	Password = keystroke("#password");
+	Feature_Username = keystroke("#username", Username);
+	Feature_Password = keystroke("#password", Password);
 	
 	$('#triger').click(function() {
 		alert("Username: " + Username + " " 
@@ -81,7 +93,6 @@ var main = function () {
 }
 
 $(document).ready(main);
-
 //$(document).ready(keystroke);
 
 /*
