@@ -60,22 +60,22 @@ var keystroke = function(field, Text) {
 	});
 	
 	// remove Backspace and other keys that user deletes because of mistake
-	var length = Released_Key.length;
-	for(i = 0; i < length; i++) {
-		item = Released_Key[i];
-		if(item.which == 8) {
-			if(i == 0) {
-				Released_Key.splice(i, 1);
-				length--;
-				i--;
-			}
-			else {
-				Released_Key.splice(i-1, 2);
-				length-=2;
-				i-=2;
-			}
-		}
-	}
+//	var length = Released_Key.length;
+//	for(i = 0; i < length; i++) {
+//		item = Released_Key[i];
+//		if(item.which == 8) {
+//			if(i == 0) {
+//				Released_Key.splice(i, 1);
+//				length--;
+//				i--;
+//			}
+//			else {
+//				Released_Key.splice(i-1, 2);
+//				length-=2;
+//				i-=2;
+//			}
+//		}
+//	}
 	
 	//return text;
 	return Released_Key;
