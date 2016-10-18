@@ -2,13 +2,13 @@
  *
  */
 
-var Username = new Array(), Password = new Array(); // records the keys that user types in
+var Username_text = new Array(), Password_text = new Array(); // records the keys that user types in
 
 var KD_time_username = new Array(), KU_time_username = new Array();
 var KD_time_pwd = new Array(), KU_time_pwd = new Array();
 var Feature_Username = new Array(), Feature_Password = new Array();
 
-var Index = -1;
+var index_password = -1, index_username = -1;
 
 function KEY(index, key, which, downtime, uptime) {
 	this.index = index;
@@ -18,7 +18,7 @@ function KEY(index, key, which, downtime, uptime) {
 	this.time_U = uptime;
 }
 
-var keystroke = function(field, Text) {
+var keystroke = function(field, Text, Index) {
 	//Record the key which is being pressed and has been released
 	var Pressed_Key = new Array(), Released_Key = new Array(); 
 	var Key;
@@ -83,13 +83,13 @@ var keystroke = function(field, Text) {
 
 var main = function () {
 	
-	Feature_Username = keystroke("#username", Username);
-	Feature_Password = keystroke("#password", Password);
+	Feature_Username = keystroke("#username", Username_text, index_password);
+	Feature_Password = keystroke("#password", Password_text, index_username);
 	
-	$('#triger').click(function() {
-		alert("Username: " + Username + " " 
-				+ " \nPassword: " + Password);
-	});
+//	$('#login').click(function() {
+//		alert("Username: " + Username + " " 
+//				+ " \nPassword: " + Password);
+//	});
 }
 
 $(document).ready(main);
