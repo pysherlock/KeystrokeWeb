@@ -123,8 +123,6 @@ class MakeAuth:
 class KeyExtract:
 
     """This class provides all the methods which extract the keystroke feature from the front-end's raw data"""
-    def __init__(self):
-        self
 
     def isPrintable(self, text):
         printset = set(string.printable);
