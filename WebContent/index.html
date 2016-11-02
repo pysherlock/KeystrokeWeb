@@ -5,8 +5,9 @@
   <title>Keystroke demo</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
   <script type="text/javascript" src=jquery-3.1.0.js></script>
-  <script type="text/javascript" src="js/demo.js"></script>
+  <script type="text/javascript" src="js/keystroke.js"></script>
   <script type="text/javascript" src="js/UI.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 </head>
 
 <body>
@@ -27,11 +28,21 @@
     </fieldset>
 
 	<button id="sign up">Sign up</button>
-    <button id="login">Login</button>
+  <button id="login">Login</button>
   </div>
   
-  <h2>Output of Text Typed as Password</h2>
-  <div class="print-output" id="output"></div>
+  <h2 id="h2">The Record Information</h2>
+    
+    <div class="print-output">
+        <fieldset class="output">
+            <label for="username-typed">Username-typed:</label>            
+            <input id="username-typed" type="text" size="50"><br>
+            <label for="password-typed">Password-typed:</label>            
+            <input id="password-typed" type="text" size="50"><br>
+            <label for="result-backend">Result-backend:</label>            
+            <input id="result-backend" type="text" size="50"><br>
+        </fieldset>
+    </div>
 
 </body>
 </html>

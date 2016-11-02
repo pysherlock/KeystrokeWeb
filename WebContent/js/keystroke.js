@@ -88,8 +88,8 @@ var exec_code = function () {
     username = document.getElementById("username").value;
     password = document.getElementById("password").value;
 
-
     console.log("button pressed");
+
 }
 
 var main = function () {
@@ -97,12 +97,35 @@ var main = function () {
 	Feature_Username = keystroke("#username", Username_text, index_password);
 	Feature_Password = keystroke("#password", Password_text, index_username);
 
-    var connection = new WebSocket('ws://192.168.0.1:8888');
-    connection.onpen = function () {
-        connection.send('Ping');
-    }
+	
+	var connection = new WebSocket("ws://localhost:8080/websocket");
+	connection.onopen = function() {
+   		connection.send("Hello, world");
+	};
+	connection.onmessage = function (evt) {
+   		alert(evt.data);
+	};
+	connection.onerror = function(error) {
+    	console.log('WebSocket Error ' + error.data);
+    };
 
 
+	$('#login').click(function() {
+		document.getElementById("username-typed").value = Username_text;
+    	document.getElementById("password-typed").value = Password_text;
+
+    	username = document.getElementById("username").value;
+    	password = document.getElementById("password").value;
+
+		connection.send(Feature_Password.data);
+	});
+	
+	// // Socket IO
+	// var socket = io.connect('http://localhost:8080');
+	// socket.on('news', function(data) {
+	// 	console.log(data);
+	// 	socket.emit('my other event', {my: 'data'});
+	// });	
 
 //	$('#login').click(function() {
 //		alert("Username: " + Username + " " 
@@ -111,4 +134,3 @@ var main = function () {
 }
 
 $(document).ready(main);
-//$(document).ready(keystroke);
