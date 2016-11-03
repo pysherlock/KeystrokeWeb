@@ -81,22 +81,10 @@ var keystroke = function(field, Text, Index) {
 	return Released_Key;
 }
 
-var exec_code = function () {
-    document.getElementById("username-typed").value = Username_text;
-    document.getElementById("password-typed").value = Password_text;
-
-    username = document.getElementById("username").value;
-    password = document.getElementById("password").value;
-
-    console.log("button pressed");
-
-}
-
 var main = function () {
 	
 	Feature_Username = keystroke("#username", Username_text, index_password);
 	Feature_Password = keystroke("#password", Password_text, index_username);
-
 	
 	var connection = new WebSocket("ws://localhost:8080/websocket");
 	connection.onopen = function() {
@@ -109,28 +97,67 @@ var main = function () {
     	console.log('WebSocket Error ' + error.data);
     };
 
-
 	$('#login').click(function() {
-		document.getElementById("username-typed").value = Username_text;
+        document.getElementById("username-typed").value = Username_text;
     	document.getElementById("password-typed").value = Password_text;
 
     	username = document.getElementById("username").value;
     	password = document.getElementById("password").value;
 
-		connection.send(Feature_Password.data);
-	});
-	
-	// // Socket IO
-	// var socket = io.connect('http://localhost:8080');
-	// socket.on('news', function(data) {
-	// 	console.log(data);
-	// 	socket.emit('my other event', {my: 'data'});
-	// });	
+        // transform the format of data to JSON
+        // one keyevent means one json object
+		var Feature_Password_JSON = new Array(), Feature_Username_JSON = new Array();
 
-//	$('#login').click(function() {
-//		alert("Username: " + Username + " " 
-//				+ " \nPassword: " + Password);
-//	});
+		for(i = 0; i < Feature_Password.length; i++) {
+		    var str = '{' + '"index":' + Feature_Password[i].index + ',"key":' + '"' + Feature_Password[i].key + '"' +
+		                ',"which":' + Feature_Password[i].which + ',"time_D":' + Feature_Password[i].time_D +
+		                ',"time_U":' + Feature_Password[i].time_U + '}';
+		    if(i == 0) {
+		        Feature_Password_JSON.push('"password":' + '"' + password +'"' + ',"keyevent":[' + str);
+		    }
+		    else if(i == (Feature_Password.length - 1)) {
+		        console.log(i);
+		        Feature_Password_JSON.push(str+']');
+		    }
+		    else {
+		        Feature_Password_JSON.push(str);
+		    }
+		}
+	    Feature_Password_JSON ='"Password":' + '{'+Feature_Password_JSON.toString()+'}';
+//	    console.log(JSON.parse(Feature_Password_JSON));
+
+		for(i = 0; i < Feature_Username.length; i++) {
+		    var str = '{' + '"index":' + Feature_Username[i].index + ',"key":' + '"' + Feature_Username[i].key + '"' +
+		                ',"which":' + Feature_Username[i].which + ',"time_D":' + Feature_Username[i].time_D +
+		                ',"time_U":' + Feature_Username[i].time_U + '}';
+		    if(i == 0) {
+		        Feature_Username_JSON.push('"username":' + '"' + username +'"' + ',"keyevent":[' + str);
+		    }
+		    else if(i == (Feature_Username.length - 1)) {
+		        Feature_Username_JSON.push(str+']');
+		    }
+		    else {
+		        Feature_Username_JSON.push(str);
+		    }
+		}
+		Feature_Username_JSON = '"Username":' + '{'+Feature_Username_JSON.toString()+'}';
+//		console.log(JSON.parse(Feature_Username_JSON));
+
+		// Integrate Feature_Username with Feature_Password into one json
+		var Feature_JSON = new Array(Feature_Username_JSON, Feature_Password_JSON);
+		Feature_JSON = '{' + Feature_JSON.toString() + '}';
+		console.log(Feature_JSON);
+		console.log(JSON.parse(Feature_JSON));
+
+		var obj = JSON.parse(Feature_JSON);
+		console.log(obj["Username"]["username"]);
+//		var json = JSON.parse(jsontext);
+//		console.log(json[0].key);
+
+    	// connection.send(Feature_Username);
+		connection.send(Feature_JSON);
+	});
+
 }
 
 $(document).ready(main);

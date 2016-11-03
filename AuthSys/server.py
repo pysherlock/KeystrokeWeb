@@ -1,5 +1,7 @@
 import os
 import json
+import random
+import numpy as np
 import tornado.ioloop
 import tornado.websocket
 import tornado.options
@@ -13,9 +15,9 @@ import argparse
 
 import SocketServer
 
-import init_model
-import makeAuth
-import data_process
+from init_model import Init_model
+from makeAuth import MakeAuth
+from data_process import DataProcess
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -34,19 +36,62 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         print "Handle websocket request"
         print "Received message: ", message;
 
-        self.write_message(u"You said" + message);
+        try:
+            json_rpc = json.loads(message);
+            print "JSON: ", json_rpc;
+            print type(json_rpc);
+            username, password = json_rpc['Username']['username'], json_rpc['Password']['password'];
+            Username_Keyevent, Password_Keyevent = json_rpc['Username']['keyevent'], json_rpc['Password']['keyevent'];
+            print "Username: ", username, " Password: ", password;
+            print Username_Keyevent, Password_Keyevent;
+
+            result = auth.main_Authentication(username=username, password=password, Username_keyDict=Username_Keyevent,
+                                     Password_keyDict=Password_Keyevent);
+            print result;
+            self.write_message(str(result));
+        except ValueError:
+            print "Error: received message is not encoded in json";
+
+        self.write_message("You said: " + message);
 
     def on_close(self):
         print "WebSocket closed"
 
 
 if __name__ == "__main__":
+    try:
+        ## Pre-process CMU data
+        CMUData = DataProcess("D:/Userfiles/ypu/Documents/GitHub/KeystrokeWeb/Dataset/Kevin and Maxion/DSL-StrongPasswordData_new.csv");
+
+        CMUData.processOnCMU();
+        print "Data pre-process on CMU dataset is finished";
+
+        ## Build profiles from CMU Data (and my own data)
+        Profiles = dict();
+        for index in range(45, 47):
+            ## For now, use 50 features to do the training
+            train_data = CMUData.cross_valid(data=CMUData.data_user[index], fold=2, shuffle=True);
+            train_index = [random.randrange(0, len(train_data), 3) for i in range(50)];
+            train_data = np.array([train_data[j] for j in train_index]);
+            model = Init_model(imposters=CMUData.imposter, train_data=train_data, index_user=index);
+            Profiles['User'+str(index)] = {"Password": ".tie5roanl", "Keystroke": model.train_Model_GMM_LOOM()}; ## K_LOOM could be set manually
+
+        print Profiles;
+
+        ## Build authentication class
+        auth = MakeAuth(Profiles=Profiles, mean=CMUData.global_Mean, std=CMUData.global_Std);
+        print "Build authentication class completed"
+
+    except IOError:
+        print "Error: can't open ", os.path.dirname(__file__) + "Dataset/Kevin and Maxion/DSL-StrongPasswordData.csv";
+
+    ## Set up tornado server, communicate with front-end by websockets
     tornado.options.parse_command_line();
     handlers = [(r"/", MainHandler), (r"/websocket", WebSocket)];
     server = tornado.web.Application(handlers);
     server.listen(options.port,address="localhost");
 
-    webbrowser.open("http://localhost:%d/" % options.port, new=2)
-
+    # webbrowser.open("http://localhost:%d/" % options.port, new=2)
     tornado.ioloop.IOLoop.current().start();
+    print "Tornado server is running now";
 

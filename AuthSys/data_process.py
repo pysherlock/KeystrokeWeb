@@ -7,13 +7,15 @@ from sklearn import cross_validation
 class DataProcess:
     """ This class provides all the methods that read and pre-process data to the usable format"""
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, data=None, data_user=None, imposter=None):
         self.file_path = file_path;
-        self.data, self.data_user, self.imposter;
+        self.data = data;
+        self.data_user = data_user;
+        self.imposter = imposter;
+        # self.data, self.data_user, self.imposter;
 
     def Z_normalize(self, data, mean, std):
         num_col = len(data[0]);
-        print num_col;
         num_row = len(data);
 
         for j in range(num_col):
@@ -21,9 +23,7 @@ class DataProcess:
                 data[i][j] = (data[i][j] - mean[j]) / std[j];
         return data;
 
-    # def process(self):
-
-    def cross_valid(data, fold, shuffle):
+    def cross_valid(self, data, fold, shuffle):
 
         kf = cross_validation.KFold(len(data), n_folds=fold, shuffle=shuffle);
         print kf;
@@ -35,7 +35,8 @@ class DataProcess:
         test_targets = test[:, 0:1].ravel();
         test_features = test[:, 3:];
 
-        return train_targets, train_features, test_targets, test_features;
+        # return train_targets, train_features, test_targets, test_features;
+        return train_features;
 
     ## Now this function only deals with the CMU dataset
     def processOnCMU(self):
@@ -43,6 +44,7 @@ class DataProcess:
             reader = csv.reader(file);
             self.data = np.array([row for row in reader]);
 
+        # self.data = np.delete(self.data, np.s_[31::1], 1);  ## Delete the "Enter"'s information
         self.data = np.delete(self.data, 0, 0);  ## Delete the first line
         num_feature = len(self.data[0]) - 3;
 
@@ -53,20 +55,19 @@ class DataProcess:
         self.data = self.data.astype(np.float);
 
         ## data normalization (z-score)
-        global_Mean, global_Std = [], [];  ##record the mean and std for each feature over the whole dataset
+        self.global_Mean, self.global_Std = [], [];  ##record the mean and std for each feature over the whole dataset
         for i in range(num_feature):
-            global_Mean.append(np.mean(self.data[:, 3 + i]));
-            global_Std.append(np.std(self.data[:, 3 + i]));
+            self.global_Mean.append(np.mean(self.data[:, 3 + i]));
+            self.global_Std.append(np.std(self.data[:, 3 + i]));
 
         ## Data normalization
-        self.data[:, 3:] = self.Z_normalize(self.data[:, 3:], global_Mean, global_Std);
+        self.data[:, 3:] = self.Z_normalize(self.data[:, 3:], self.global_Mean, self.global_Std);
         ## Split data by different users
-        data_user = np.array([self.data[i * 400:(i + 1) * 400] for i in range(51)]);
+        self.data_user = np.array([self.data[i * 400:(i + 1) * 400] for i in range(51)]);
 
         ## build imposter pool
-        imposter = np.array([data_user[i][0:5] for i in range(0, 51)]);
-        print imposter.shape;
-        imposter_targets = imposter[:, :, 0];
-        print imposter_targets.shape;
+        imposter = np.array([self.data_user[i][0:5] for i in range(0, 51)]);
+        # print imposter.shape;
+        # imposter_targets = imposter[:, :, 0];
         imposter_features = imposter[:, :, 3:];
         self.imposter = imposter_features;

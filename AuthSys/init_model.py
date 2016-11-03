@@ -9,8 +9,11 @@ class Init_model:
     """ This class provides methods to train the GMM model for user behavior analyse. Including searching the optimal parameters,
     and training model."""
 
-    def __init__(self, imposters):
-        self.imposter_features = imposters;
+    def __init__(self, imposters, train_data, index_user):
+        self.imposter_features = imposters; ## Imposter pool for search parameters
+        self.train_data = train_data; ## The train data of one user
+        self.index_user = index_user; ## The index of user in the whole database
+
 
     ## Grid search to find the optimal parameters for the GMM LOOM model
     ## A very important part in model training
@@ -31,7 +34,7 @@ class Init_model:
 
         n_components_range = range(1, 50);  ## num_components: 1~50
         K_range = np.arange(0.01, 2.01, 0.01);  ## 0.01~1.99, variance is 0.01
-        covariances = ['spherical', 'diag', 'full', 'tied'];
+        # covariances = ['spherical', 'diag', 'full', 'tied'];
         covariances = ['diag'];  ## seems like the best covar_type is 'diag' surely
 
         Opt_n_components = dict((covar_type, 0) for covar_type in covariances);
@@ -39,8 +42,9 @@ class Init_model:
         Opt_K = dict((covar_type, 0) for covar_type in covariances);
 
         ## extract imposter from the imposter pool
-        imposter_user = np.concatenate((self.imposter_features[0:index_user], self.imposter_features[index_user + 1:])).reshape(
-            250, 28);
+        ## Now, it is specifically to CMU dataset
+        imposter_user = np.concatenate((self.imposter_features[0:index_user],
+                                        self.imposter_features[index_user + 1:])).reshape(250, 28);
         genuine_user = np.array(genuine_user);
 
         loo = cross_validation.LeaveOneOut(len(trainSet));
@@ -114,17 +118,17 @@ class Init_model:
         parameters = {'n_components': n_components, 'covar_type': covar_type, 'K': K};
         return parameters;
 
-    def train_Model_GMM_LOOM(self, train_data, k, index_user):
-        parameters = self.__searchOfParameters(train_data, index_user);
+    def train_Model_GMM_LOOM(self, K_LOOM=None):
+        parameters = self.__searchOfParameters(self.train_data, self.index_user);
         model = GMM(n_components=parameters['n_components'], covariance_type=parameters['covar_type'], init_params='wc',
                     n_iter=20);
 
         ##LOOM Method
-        loo = cross_validation.LeaveOneOut(len(train_data));
-        print(len(train_data));
+        loo = cross_validation.LeaveOneOut(len(self.train_data));
+        print(len(self.train_data));
         Scores = [];
         for train_index, test_index in loo:
-            train, test = train_data[train_index], train_data[test_index];
+            train, test = self.train_data[train_index], self.train_data[test_index];
             model.fit(train);
             Scores.append(model.score(test));
 
@@ -132,14 +136,17 @@ class Init_model:
         mean = np.mean(Scores);
         std = np.std(Scores);
 
-        Seq = [Scores[i] for i in range(len(Scores)) if abs(Scores[i] - mean) < parameters['K'] * std];
+        if(K_LOOM == None):
+            K_LOOM = parameters['K'];
+
+        print "K_LOOM: ", K_LOOM;
+        Seq = [Scores[i] for i in range(len(Scores)) if abs(Scores[i] - mean) < K_LOOM * std];
         if (not Seq):
-            print "not Seq";
-            threshold = mean - parameters['K'] * std;
+            threshold = mean - K_LOOM * std;
         else:
             threshold = min(Seq);
 
         ## Train the GMM model. Profile includes a GMM model and a threshold
-        model.fit(train_data);
+        model.fit(self.train_data);
         profile = dict({'model': model, 'threshold': threshold});
         return profile;

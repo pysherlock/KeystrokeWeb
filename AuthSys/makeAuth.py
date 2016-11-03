@@ -25,8 +25,7 @@ class MakeAuth:
         self.Profiles = Profiles;
         self.global_Mean, self.global_Std = mean, std;
 
-
-    def make_Auth(self, model, threshold, feature):
+    def __make_Auth(self, model, threshold, feature):
         score = model.score(feature);
         if(score < threshold):
             return [False, score[0], threshold];
@@ -34,7 +33,7 @@ class MakeAuth:
             return [True, score[0], threshold];
 
 
-    def main_Authentication(self, username, password, Username_keyMap, Password_keyMap):
+    def main_Authentication(self, username, password, Username_keyDict, Password_keyDict):
 
         if (not self.Profiles.has_key(username)):
             print "This user doesn't exist";
@@ -48,26 +47,24 @@ class MakeAuth:
 
         ## Password.append("Enter"); ## Because we should let the password be compatible with CMU password
 
-        Username_keyevent = [KeyEvent(Username_keyMap['index'][i], Username_keyMap['key'][i],
-                                      Username_keyMap['which'][i], Username_keyMap['time_D'][i],
-                                      Username_keyMap['time_U'][i]) for i in range(len(Username_keyMap['index']))];
+        Username_keyevent = [KeyEvent(Username_keyDict[i]['index'], Username_keyDict[i]['key'],
+                                      Username_keyDict[i]['which'], Username_keyDict[i]['time_D'],
+                                      Username_keyDict[i]['time_U']) for i in range(len(Username_keyDict))];
 
-        Password_keyevent = [KeyEvent(Password_keyMap['index'][i], Password_keyMap['key'][i],
-                                      Password_keyMap['which'][i], Password_keyMap['time_D'][i],
-                                      Password_keyMap['time_U'][i]) for i in range(len(Password_keyMap['index']))];
+        Password_keyevent = [KeyEvent(Password_keyDict[i]['index'], Password_keyDict[i]['key'],
+                                      Password_keyDict[i]['which'], Password_keyDict[i]['time_D'],
+                                      Password_keyDict[i]['time_U']) for i in range(len(Password_keyDict))];
 
         ## Deal with typing mistake and generate feature vector
         ## sort by pressed index. The orginal vector is in sequence of release
         Press_Sequence_Username = sorted(Username_keyevent, key=lambda keyevent: keyevent.index);
         Press_Sequence_Password = sorted(Password_keyevent, key=lambda keyevent: keyevent.index);
 
-        # RemoveMistake(Press_Sequence_Username);
-        # RemoveMistake(Press_Sequence_Password);
-
         ## Look for user's correct password as reference according to its username
         ## The real password is used as the reference which helps us to extract the keystroke feature
-        Username_Keystroke = KeyExtract.extract_Feature(Press_Sequence_Username, Username);
-        Password_Keystroke = KeyExtract.extract_Feature(Press_Sequence_Password, Password);
+        keyextract = KeyExtract()
+        Username_Keystroke = keyextract.extract_Feature(Press_Sequence_Username, Username);
+        Password_Keystroke = keyextract.extract_Feature(Press_Sequence_Password, Password);
 
         ## Generate feature vectors for each sub-feature,
         ## four kinds of sub-features: hold-time, DDKL, UDKL, UUKL
@@ -103,15 +100,6 @@ class MakeAuth:
         ## Feature normalization
         for i in range(len(Feature_Vector)):
             Feature_Vector[i] = (Feature_Vector[i] - self.global_Mean[i]) / self.global_Std[i];
-
-            ## Make the keystroke authentication
-            #     print "Make authentication";
-            #     if(make_Authentication(Profiles[Username]['Profile']['model'],
-            #                            Profiles[Username]['Profile']['threshold'],
-            #                            np.array(Feature_Vector).reshape(1,-1))):
-            #         return 0;
-            #     else:
-            #         return 1;
 
         ## For demo and testing phase
         result = self.make_Auth(self.Profiles[Username]['Keystroke']['model'],
