@@ -12,6 +12,7 @@ class DataProcess:
         self.data = data;
         self.data_user = data_user;
         self.imposter = imposter;
+        self.global_Mean, self.global_Std = [], []; ##record the mean and std for each feature over the whole dataset
         # self.data, self.data_user, self.imposter;
 
     def Z_normalize(self, data, mean, std):
@@ -38,6 +39,24 @@ class DataProcess:
         # return train_targets, train_features, test_targets, test_features;
         return train_features;
 
+    def process(self):
+        with open(self.file_path, 'r') as file:
+            reader = csv.reader(file);
+            self.data = np.array([row for row in reader]);
+        self.data = np.array(self.data);
+        self.data = self.data.astype(np.float);
+
+        ## data normalization (z-score)
+        num_feature = len(self.data[0]);
+        for i in range(num_feature):
+            self.global_Mean.append(np.mean(self.data[:, i]));
+            self.global_Std.append(np.std(self.data[:, i]));
+
+        ## Data normalization
+        self.data = self.Z_normalize(self.data, self.global_Mean, self.global_Std);
+
+
+
     ## Now this function only deals with the CMU dataset
     def processOnCMU(self):
         with open(self.file_path, 'r') as file:
@@ -55,7 +74,6 @@ class DataProcess:
         self.data = self.data.astype(np.float);
 
         ## data normalization (z-score)
-        self.global_Mean, self.global_Std = [], [];  ##record the mean and std for each feature over the whole dataset
         for i in range(num_feature):
             self.global_Mean.append(np.mean(self.data[:, 3 + i]));
             self.global_Std.append(np.std(self.data[:, 3 + i]));

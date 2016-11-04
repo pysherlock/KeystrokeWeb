@@ -52,7 +52,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except ValueError:
             print "Error: received message is not encoded in json";
 
-        self.write_message("You said: " + message);
+    # self.write_message("You said: " + message);
 
     def on_close(self):
         print "WebSocket closed"
@@ -61,9 +61,10 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 if __name__ == "__main__":
     try:
         ## Pre-process CMU data
-        CMUData = DataProcess("D:/Userfiles/ypu/Documents/GitHub/KeystrokeWeb/Dataset/Kevin and Maxion/DSL-StrongPasswordData_new.csv");
-
+        CMUData = DataProcess("../Dataset/Kevin and Maxion/DSL-StrongPasswordData_new.csv");
+        PYData = DataProcess("../Dataset/New Users/PUYang.csv");
         CMUData.processOnCMU();
+        PYData.process();
         print "Data pre-process on CMU dataset is finished";
 
         ## Build profiles from CMU Data (and my own data)
@@ -77,6 +78,9 @@ if __name__ == "__main__":
             Profiles['User'+str(index)] = {"Password": ".tie5roanl", "Keystroke": model.train_Model_GMM_LOOM()}; ## K_LOOM could be set manually
 
         print Profiles;
+
+        model = Init_model(imposters=CMUData.imposter, train_data=PYData.data, index_user=1);
+        Profiles['User'+str(1)] = {"Password": ".tie5roanl", "Keystroke": model.train_Model_GMM_LOOM()};
 
         ## Build authentication class
         auth = MakeAuth(Profiles=Profiles, mean=CMUData.global_Mean, std=CMUData.global_Std);
@@ -92,6 +96,6 @@ if __name__ == "__main__":
     server.listen(options.port,address="localhost");
 
     # webbrowser.open("http://localhost:%d/" % options.port, new=2)
-    tornado.ioloop.IOLoop.current().start();
     print "Tornado server is running now";
+    tornado.ioloop.IOLoop.current().start();
 

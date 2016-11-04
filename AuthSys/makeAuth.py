@@ -56,13 +56,13 @@ class MakeAuth:
                                       Password_keyDict[i]['time_U']) for i in range(len(Password_keyDict))];
 
         ## Deal with typing mistake and generate feature vector
-        ## sort by pressed index. The orginal vector is in sequence of release
+        ## sort by pressed index. The orginal vector is in sequence of release'
         Press_Sequence_Username = sorted(Username_keyevent, key=lambda keyevent: keyevent.index);
         Press_Sequence_Password = sorted(Password_keyevent, key=lambda keyevent: keyevent.index);
 
         ## Look for user's correct password as reference according to its username
         ## The real password is used as the reference which helps us to extract the keystroke feature
-        keyextract = KeyExtract()
+        keyextract = KeyExtract();
         Username_Keystroke = keyextract.extract_Feature(Press_Sequence_Username, Username);
         Password_Keystroke = keyextract.extract_Feature(Press_Sequence_Password, Password);
 
@@ -102,7 +102,7 @@ class MakeAuth:
             Feature_Vector[i] = (Feature_Vector[i] - self.global_Mean[i]) / self.global_Std[i];
 
         ## For demo and testing phase
-        result = self.make_Auth(self.Profiles[Username]['Keystroke']['model'],
+        result = self.__make_Auth(self.Profiles[Username]['Keystroke']['model'],
                                 self.Profiles[Username]['Keystroke']['threshold'],
                                 np.array(Feature_Vector).reshape(1, -1));
         return result;
@@ -146,7 +146,9 @@ class KeyExtract:
             i += 1;
 
     def extract_Feature(self, Press_Sequence, Reference):
-        Press_Sequence = self.RemoveMistake(Press_Sequence);
+        print Press_Sequence;
+        self.RemoveMistake(Press_Sequence);
+        print Press_Sequence;
 
         Feature = [];
         i = len(Press_Sequence) - 1;
