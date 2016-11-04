@@ -77,6 +77,14 @@ var main = function () {
 	};
 	connection.onmessage = function (evt) {
    		alert(evt.data);
+   		if(evt.data.indexOf("True") != -1){
+   		    console.log("here");
+   		    document.getElementById("p1").innerHTML = "Authentication succeeded or you cracked this: " + evt.data;
+   		}
+   		else {
+   		    console.log("here");
+            document.getElementById("p1").innerHTML = "Authentication failed. Who are you or are you injured? " + evt.data;
+        }
 	};
 	connection.onerror = function(error) {
     	console.log('WebSocket Error ' + error.data);

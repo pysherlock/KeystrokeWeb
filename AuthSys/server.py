@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
         ## Build profiles from CMU Data (and my own data)
         Profiles = dict();
-        for index in range(45, 47):
+        for index in range(45, 50):
             ## For now, use 50 features to do the training
             train_data = CMUData.cross_valid(data=CMUData.data_user[index], fold=2, shuffle=True);
             train_index = [random.randrange(0, len(train_data), 3) for i in range(50)];
