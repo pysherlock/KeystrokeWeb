@@ -70,6 +70,7 @@ if __name__ == "__main__":
         ## Build profiles from CMU Data (and my own data)
         Profiles = dict();
         for index in range(45, 50):
+            print index;
             ## For now, use 50 features to do the training
             train_data = CMUData.cross_valid(data=CMUData.data_user[index], fold=2, shuffle=True);
             train_index = [random.randrange(0, len(train_data), 3) for i in range(50)];
@@ -77,14 +78,12 @@ if __name__ == "__main__":
             model = Init_model(imposters=CMUData.imposter, train_data=train_data, index_user=index);
             Profiles['User'+str(index)] = {"Password": ".tie5roanl", "Keystroke": model.train_Model_GMM_LOOM()}; ## K_LOOM could be set manually
 
-        print Profiles;
-
         model = Init_model(imposters=CMUData.imposter, train_data=PYData.data, index_user=1);
         Profiles['User'+str(1)] = {"Password": ".tie5roanl", "Keystroke": model.train_Model_GMM_LOOM()};
 
         ## Build authentication class
-        auth = MakeAuth(Profiles=Profiles, mean=CMUData.global_Mean, std=CMUData.global_Std);
-        print "Build authentication class completed"
+        auth = MakeAuth(Profiles=Profiles, mean=DataProcess.global_Mean, std=DataProcess.global_Std);
+        print "Build authentication class completed";
 
     except IOError:
         print "Error: can't open ", os.path.dirname(__file__) + "Dataset/Kevin and Maxion/DSL-StrongPasswordData.csv";

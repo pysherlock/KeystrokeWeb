@@ -32,7 +32,6 @@ class MakeAuth:
         else:
             return [True, score[0], threshold];
 
-
     def main_Authentication(self, username, password, Username_keyDict, Password_keyDict):
 
         if (not self.Profiles.has_key(username)):
@@ -107,11 +106,9 @@ class MakeAuth:
                                 np.array(Feature_Vector).reshape(1, -1));
         return result;
 
-
 class KeyExtract:
 
     """This class provides all the methods which extract the keystroke feature from the front-end's raw data"""
-
     def isPrintable(self, text):
         printset = set(string.printable);
         return set(text).issubset(printset);

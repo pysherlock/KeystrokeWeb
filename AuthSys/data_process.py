@@ -6,13 +6,15 @@ from sklearn import cross_validation
 
 class DataProcess:
     """ This class provides all the methods that read and pre-process data to the usable format"""
+    global_Mean = None;
+    global_Std = None;
 
     def __init__(self, file_path, data=None, data_user=None, imposter=None):
         self.file_path = file_path;
         self.data = data;
         self.data_user = data_user;
         self.imposter = imposter;
-        self.global_Mean, self.global_Std = [], []; ##record the mean and std for each feature over the whole dataset
+        self.Mean, self.Std = [], []; ##record the mean and std for each feature over the whole dataset
         # self.data, self.data_user, self.imposter;
 
     def Z_normalize(self, data, mean, std):
@@ -49,13 +51,11 @@ class DataProcess:
         ## data normalization (z-score)
         num_feature = len(self.data[0]);
         for i in range(num_feature):
-            self.global_Mean.append(np.mean(self.data[:, i]));
-            self.global_Std.append(np.std(self.data[:, i]));
+            self.Mean.append(np.mean(self.data[:, i]));
+            self.Std.append(np.std(self.data[:, i]));
 
         ## Data normalization
-        self.data = self.Z_normalize(self.data, self.global_Mean, self.global_Std);
-
-
+        self.data = self.Z_normalize(self.data, DataProcess.global_Mean, DataProcess.global_Std);
 
     ## Now this function only deals with the CMU dataset
     def processOnCMU(self):
@@ -75,17 +75,19 @@ class DataProcess:
 
         ## data normalization (z-score)
         for i in range(num_feature):
-            self.global_Mean.append(np.mean(self.data[:, 3 + i]));
-            self.global_Std.append(np.std(self.data[:, 3 + i]));
+            self.Mean.append(np.mean(self.data[:, 3 + i]));
+            self.Std.append(np.std(self.data[:, 3 + i]));
+
+        ##Set the mean and std of CMU dataset as global_Mean and global_Std
+        DataProcess.global_Mean, DataProcess.global_Std =self.Mean, self.Std;
 
         ## Data normalization
-        self.data[:, 3:] = self.Z_normalize(self.data[:, 3:], self.global_Mean, self.global_Std);
+        self.data[:, 3:] = self.Z_normalize(self.data[:, 3:], DataProcess.global_Mean, DataProcess.global_Std);
         ## Split data by different users
         self.data_user = np.array([self.data[i * 400:(i + 1) * 400] for i in range(51)]);
 
         ## build imposter pool
         imposter = np.array([self.data_user[i][0:5] for i in range(0, 51)]);
-        # print imposter.shape;
         # imposter_targets = imposter[:, :, 0];
         imposter_features = imposter[:, :, 3:];
         self.imposter = imposter_features;
