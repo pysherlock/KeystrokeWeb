@@ -36,10 +36,10 @@ class MakeAuth:
 
         if (not self.Profiles.has_key(username)):
             print "This user doesn't exist";
-            return 2;
+            return "The user doesn't exist";
         elif (self.Profiles[username]["Password"] != password):
             print "Password is not correct";
-            return 3;
+            return "Password is not correct";
 
         Username = username;
         Password = password;

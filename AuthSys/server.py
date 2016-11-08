@@ -38,6 +38,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
         try:
             json_rpc = json.loads(message);
+            print "Error: received message is not encoded in correct format (json)";
             print "JSON: ", json_rpc;
             print type(json_rpc);
             username, password = json_rpc['Username']['username'], json_rpc['Password']['password'];
@@ -49,10 +50,11 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                                      Password_keyDict=Password_Keyevent);
             print result;
             self.write_message(str(result));
-        except ValueError:
-            print "Error: received message is not encoded in json";
+        except ValueError as e:
+            print "Error: received message is not encoded in json; ", e.message;
+        except KeyError as e:
+            print "Error: received message is not encoded in correct format; ";
 
-    # self.write_message("You said: " + message);
 
     def on_close(self):
         print "WebSocket closed"
