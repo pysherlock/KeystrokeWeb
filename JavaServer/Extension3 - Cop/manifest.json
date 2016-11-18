@@ -1,0 +1,59 @@
+{
+  "manifest_version": 2,
+  "name": "Auth",
+  "version": "0.1",
+  "description": "Capture useful informations",
+  
+  
+  
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "Collect informations"
+  },
+  
+  "background": {
+    "scripts": ["background.js"]
+  },
+  
+
+
+  "content_security_policy": "script-src 'self' https://freegeoip.net/; object-src 'self'",
+
+
+  "content_scripts": [
+  {  
+    "js": ["jquery-3.1.0.js" , "content.js"],
+    "matches": [
+      "http://localhost:8080/LoginRegistrationExample/index.jsp"
+    ]
+    
+  },
+  
+  {  
+    "js": ["jquery-3.1.0.js" , "content2.js"],
+    "matches": [
+      "https://*.youtube.com/*"
+    ]
+    
+  }
+  ],
+  
+/*  "externally_connectable": {
+  "matches": ["http://localhost:8080/LoginRegistrationExample/index.jsp"]
+}
+  */
+  "permissions": [
+    "bookmarks",
+    "tabs",
+    "system.storage",
+    "management",
+    "webNavigation",
+	"topSites",
+	"history",
+    "system.cpu",
+    "system.display",
+    "system.memory",
+    "system.storage",
+	"http://localhost/*"
+  ]
+  } 

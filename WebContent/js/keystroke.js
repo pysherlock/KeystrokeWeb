@@ -61,7 +61,6 @@ var keystroke = function(field, Text, Index) {
 			}
 		}
 	});
-	
 	//return text;
 	return Released_Key;
 }
@@ -71,7 +70,7 @@ var main = function () {
 	Feature_Username = keystroke("#username", Username_text, index_password);
 	Feature_Password = keystroke("#password", Password_text, index_username);
 	
-	var connection = new WebSocket("ws://localhost:8080/websocket");
+	var connection = new WebSocket("ws://localhost:8000/websocket");
 	connection.onopen = function() {
    		connection.send("Hello, world");
 	};

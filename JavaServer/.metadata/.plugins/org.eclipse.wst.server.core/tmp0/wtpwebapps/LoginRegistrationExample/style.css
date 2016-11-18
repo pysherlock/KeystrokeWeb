@@ -1,0 +1,375 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+
+
+/* background image -----------------*/
+
+html{background:url(background.jpg) no-repeat;;
+  background-size: cover;
+    background-attachment: fixed;
+    height:100%;
+}
+h1 {
+  text-align:center;
+}
+
+
+label.error {
+  color:#a52a2a;}
+
+
+/* login registration tabs hover -------------------*/
+/*a:hover {
+	
+    background-color: #39D2B4;
+} */
+
+
+ a {
+    height:50px;
+    width:140px;
+    /*position:relative;
+    left :10px;*/
+    border: #fbfbfb solid 4px;
+    display:block;
+    background:#a0b3b0;
+    font-size:22px;
+    /*float:left;*/
+    text-align:center;
+    cursor:pointer;
+    /*transition:.5s ease;*/
+    margin: 0;
+    padding: 0;
+   
+  }
+
+a:focus{
+    background:#39D2B4;
+
+}
+
+
+a:hover {
+      background:#39D2B4;
+
+    }
+
+
+#tab {
+	
+   background:rgba(0,0,0,0);
+   border:rgba(0,0,0,0);
+   
+} 
+
+.separation{
+	position:relative;
+    left :22px;
+    /*margin: 0px 0px 0px, 0px;*/
+    height:0px;
+    background:rgba(0,0,0,0);
+    /*border:rgba(0,0,0,0);*/
+    border: none;
+    /*outline: none; */
+  } 
+
+
+/*form style -----------*/
+
+#feedback-page{
+	text-align:center;
+}
+
+#form-main{
+	width:100%;
+	float:left;
+	padding-top:0px;
+}
+
+#login{
+	padding-top:120px;
+}
+
+#register{
+	padding-top:120px;
+}
+
+
+#form-div {
+	background-color:rgba(72,72,72,0.4);
+	padding-left:35px;
+	padding-right:35px;
+	padding-top:35px;
+	padding-bottom:50px;
+	width: 450px;
+	float: left;
+	left: 50%;
+	position: absolute;
+    margin-top:30px;
+	margin-left: -260px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+}
+
+.feedback-input {
+	color:#3c3c3c;
+	font-family: Helvetica, Arial, sans-serif;
+    font-weight:500;
+	font-size: 18px;
+	border-radius: 0;
+	line-height: 22px;
+	background-color: #fbfbfb;
+	padding: 13px 13px 13px 54px;
+	margin-bottom: 10px;
+	width:100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+    border: 3px solid rgba(0,0,0,0);
+}
+
+.feedback-input:focus{
+	background: #fff;
+	box-shadow: 0;
+	border: 3px solid #39D2B4;
+	color: #39D2B4;
+	outline: none;
+    padding: 13px 13px 13px 54px;
+}
+
+.focused{
+	color:#39D2B4;
+	border:#39D2B4 solid 3px;
+}
+
+/* Icons ---------------------------------- */
+#username{
+	background-image: url(http://rexkirby.com/kirbyandson/images/name.svg);
+	background-size: 30px 30px;
+	background-position: 11px 8px;
+	background-repeat: no-repeat;
+}
+
+#username:focus{
+	background-image: url(http://rexkirby.com/kirbyandson/images/name.svg);
+	background-size: 30px 30px;
+	background-position: 8px 5px;
+    background-position: 11px 8px;
+	background-repeat: no-repeat;
+}
+
+
+
+#password{
+	background-image: url(http://rexkirby.com/kirbyandson/images/comment.svg);
+	background-size: 30px 30px;
+	background-position: 11px 8px;
+	background-repeat: no-repeat;
+	margin-top:20px;
+}
+
+
+input:hover, textarea:hover,
+input:focus, textarea:focus {
+	background-color:white;
+}
+
+button[type="button"]{
+	font-family: Arial, Helvetica, sans-serif;
+	float:left;
+	width: 100%;
+	border: #fbfbfb solid 4px;
+	cursor:pointer;
+	background-color: #39D2B4;
+	color:white;
+	font-size:24px;
+	padding-top:22px;
+	padding-bottom:22px;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+    margin-top:-1px;
+    font-weight:700;
+}
+
+button[type="button"]:hover{
+	background-color: rgba(0,0,0,0);
+	color: #39D2B4;
+}
+	
+.ease {
+	width: 0px;
+	height: 76px;
+	background-color: #fbfbfb;
+	margin-top: 50px;
+	-webkit-transition: .3s ease;
+	-moz-transition: .3s ease;
+	-o-transition: .3s ease;
+	-ms-transition: .3s ease;
+	transition: .3s ease;
+}
+
+.submit:hover .ease{
+  width:100%;
+  background-color:white;
+}
+
+@media only screen and (max-width: 580px) {
+	#form-div{
+		left: 3%;
+		margin-right: 3%;
+		width: 88%;
+		margin-left: 0;
+		padding-left: 3%;
+		padding-right: 3%;
+	}
+}
+
+
+
+
+
+/* checkboxes ------------------------------------  */
+
+	p :hover,
+	p :focus {
+		text-decoration: underline;
+	}
+
+	form p { margin: 15px 0; }
+	.detail {position: absolute; text-align: right; right: 5px; bottom: 5px; width: 50%;}
+	
+
+
+
+[type="checkbox"]:not(:checked),
+	[type="checkbox"]:checked {
+		position: absolute;
+		left: -9999px;
+	}
+	[type="checkbox"]:not(:checked) + label,
+	[type="checkbox"]:checked + label {
+		position: relative;
+		padding-left: 75px;
+		cursor: pointer;
+	}
+	[type="checkbox"]:not(:checked) + label:before,
+	[type="checkbox"]:checked + label:before,
+	[type="checkbox"]:not(:checked) + label:after,
+	[type="checkbox"]:checked + label:after {
+		content: '';
+		position: absolute;
+	}
+	[type="checkbox"]:not(:checked) + label:before,
+	[type="checkbox"]:checked + label:before {
+		left:0; top: -3px;
+		width: 65px; height: 30px;
+		background: #DDDDDD;
+		border-radius: 15px;
+		-webkit-transition: background-color .2s;
+		-moz-transition: background-color .2s;
+		-ms-transition: background-color .2s;
+		transition: background-color .2s;
+	}
+	[type="checkbox"]:not(:checked) + label:after,
+	[type="checkbox"]:checked + label:after {
+		width: 20px; height: 20px;
+		-webkit-transition: all .2s;
+		-moz-transition: all .2s;
+		-ms-transition: all .2s;
+		transition: all .2s;
+		border-radius: 50%;
+		background: #7F8C9A;
+		top: 2px; left: 5px;
+	}
+
+	/* on checked */
+	[type="checkbox"]:checked + label:before {
+		background:#34495E; 
+	}
+	[type="checkbox"]:checked + label:after {
+		background: #39D2B4;
+		top: 2px; left: 40px;
+	}
+
+	[type="checkbox"]:checked + label .ui,
+	[type="checkbox"]:not(:checked) + label .ui:before,
+	[type="checkbox"]:checked + label .ui:after {
+		position: absolute;
+		left: 6px;
+		width: 65px;
+		border-radius: 15px;
+		font-size: 14px;
+		font-weight: bold;
+		line-height: 22px;
+		-webkit-transition: all .2s;
+		-moz-transition: all .2s;
+		-ms-transition: all .2s;
+		transition: all .2s;
+	}
+	[type="checkbox"]:not(:checked) + label .ui:before {
+		content: "no";
+		left: 32px
+	}
+	[type="checkbox"]:checked + label .ui:after {
+		content: "yes";
+		color: #39D2B4;
+	}
+	[type="checkbox"]:focus + label:before {
+		border: 1px dashed #777;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		box-sizing: border-box;
+		margin-top: -1px;
+	}
+	input[type=checkbox]:checked + label {
+       color: #39D2B4;
+       font-weight: 700;
+} 
+
+
+#svg circle {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+  stroke: #666;
+  stroke-width: 0.6em;
+}
+#svg #bar {
+  stroke: 	#585858   ;
+}
+#cont {
+  text-align: center;
+  font-size: 80%;
+  display: block;
+  height: 100px;
+  width: 100px;
+  left: 0%;
+  top: 10%;
+  margin: 2em auto;
+  box-shadow: 0 0 1em black;
+  border-radius: 100%;
+  position: relative;
+}
+
+#cont:after {
+  position: absolute;
+  display: block;
+  height: 80px;
+  width: 80px;
+  left: 50%;
+  top: 50%;
+  box-shadow: inset 0 0 1em black;
+  content: attr(data-pct)"%";
+  margin-top: -40px;
+  margin-left: -40px;
+  border-radius: 50%;
+  line-height: 80px;
+  font-size: 2em;
+  text-shadow: 0 0 0.5em black;
+}
+
+/* h4{
+	display:inline;
+}*/

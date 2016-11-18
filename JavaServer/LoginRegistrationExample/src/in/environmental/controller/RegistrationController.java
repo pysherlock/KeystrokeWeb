@@ -1,0 +1,136 @@
+package in.environmental.controller;
+
+import in.environmental.dao.UserDAOImpl;
+import in.environmental.model.User;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+/**
+ * Servlet implementation class RegistrationController
+ */
+@WebServlet("/RegistrationController")
+public class RegistrationController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public RegistrationController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		String error;
+		String username = request.getParameter("username");
+		String password= request.getParameter("password");
+		String processor = request.getParameter("processor");
+		String memory = request.getParameter("memory");
+		String os = request.getParameter("os");
+		String chrome = request.getParameter("chrome");
+		String storage = request.getParameter("storage");
+		String locIP = request.getParameter("locIP");
+		String pubIP= request.getParameter("pubIP");
+		String country = request.getParameter("country");
+		String region = request.getParameter("region");
+		String zip = request.getParameter("zip");
+		Boolean charge = Boolean.parseBoolean(request.getParameter("charge"));
+		int tabIndex = Integer.parseInt(request.getParameter("tabIndex"));
+		Boolean removable = Boolean.parseBoolean(request.getParameter("removable"));
+		String transition = request.getParameter("transition");
+		Boolean priv = Boolean.parseBoolean(request.getParameter("priv"));
+		Float width = Float.parseFloat(request.getParameter("width"));
+		Float height= Float.parseFloat(request.getParameter("height"));
+		String url = request.getParameter("url");
+		Float press = Float.parseFloat(request.getParameter("press"));
+		Float zoom = Float.parseFloat(request.getParameter("zoom"));
+		String click = request.getParameter("click");
+		String selected = request.getParameter("selected");
+		String lastCharacter = request.getParameter("lastCharacter");
+		Boolean detach = Boolean.parseBoolean(request.getParameter("detach"));
+		Boolean closetab = Boolean.parseBoolean(request.getParameter("closetab"));
+		Boolean bookmarkChange= Boolean.parseBoolean(request.getParameter("bookmarkChange"));
+		Boolean volumeChange = Boolean.parseBoolean(request.getParameter("volumeChange"));
+		Float volume = Float.parseFloat(request.getParameter("volume"));
+		Boolean muted = Boolean.parseBoolean(request.getParameter("muted"));
+		Boolean paused = Boolean.parseBoolean(request.getParameter("paused"));
+		Boolean speedChange = Boolean.parseBoolean(request.getParameter("speedChange"));
+		Float currentTime = Float.parseFloat(request.getParameter("currentTime"));
+		Boolean ended = Boolean.parseBoolean(request.getParameter("ended"));
+		Boolean seek = Boolean.parseBoolean(request.getParameter("seek"));
+		String hardware_factor = request.getParameter("hardware_factor");
+		String IP_factor = request.getParameter("IP_factor");
+		String location_factor = request.getParameter("location_factor");
+		String charge_factor = request.getParameter("charge_factor");
+		String tabIndex_factor = request.getParameter("tabIndex_factor");
+		String removable_factor = request.getParameter("removable_factor");
+		String transition_factor = request.getParameter("transition_factor");
+		String priv_factor = request.getParameter("priv_factor");
+		String width_factor = request.getParameter("width_factor");
+		String height_factor= request.getParameter("height_factor");
+		String url_factor = request.getParameter("url_factor");
+		String press_factor = request.getParameter("press_factor");
+		String zoom_factor = request.getParameter("zoom_factor");
+		String click_factor = request.getParameter("click_factor");
+		String selected_factor = request.getParameter("selected_factor");
+		String lastCharacter_factor = request.getParameter("lastCharacter_factor");
+		String detach_factor = request.getParameter("detach_factor");
+		String closetab_factor = request.getParameter("closetab_factor");
+		String bookmarkChange_factor= request.getParameter("bookmarkChange_factor");
+		String volumeChange_factor = request.getParameter("volumeChange_factor");
+		String volume_factor = request.getParameter("volume_factor");
+		String muted_factor = request.getParameter("muted_factor");
+		String paused_factor = request.getParameter("paused_factor");
+		String speedChange_factor = request.getParameter("speedChange_factor");
+		String currentTime_factor = request.getParameter("currentTime_factor");
+		String ended_factor = request.getParameter("ended_factor");
+		String seek_factor= request.getParameter("seek_factor");
+		int score= Integer.parseInt(request.getParameter("score"));
+		User user = new User(username, password, processor, memory, os, chrome, storage, locIP, pubIP, country, region, zip,
+				charge, tabIndex, removable, transition, priv, width, height, url, press, zoom, click, selected, lastCharacter, 
+				detach, closetab, bookmarkChange, volumeChange, volume, muted, paused, speedChange, currentTime, ended, seek, 
+				hardware_factor, IP_factor, location_factor, charge_factor, tabIndex_factor, removable_factor, transition_factor, 
+				priv_factor, width_factor, height_factor, url_factor, press_factor, zoom_factor, click_factor, selected_factor, 
+				lastCharacter_factor, detach_factor, closetab_factor, bookmarkChange_factor, volumeChange_factor, volume_factor, 
+				muted_factor, paused_factor, speedChange_factor, currentTime_factor, ended_factor, seek_factor, score);
+		
+		UserDAOImpl userDAOImpl = new UserDAOImpl();
+		
+		int result = userDAOImpl.createOrUpdateUser(user);
+		
+		if(result == 0){
+			System.out.println("User could not be registered");
+		}
+		
+		else if (result == -1)
+		{
+			System.out.println("User already exists");
+			
+			error = "User already exists";
+			
+			session.setAttribute("error", error);
+			response.sendRedirect("index.jsp#register");
+		}
+		else
+			{
+		
+			System.out.println(user.getUsername()+" You have been registered successfully");
+			error = "none";
+			session.setAttribute("error", error);
+			response.sendRedirect("success.html");
+		}
+		
+	}
+
+}

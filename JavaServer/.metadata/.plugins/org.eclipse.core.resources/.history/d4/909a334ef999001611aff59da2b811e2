@@ -1,0 +1,12 @@
+package in.environmental.dao;
+
+import in.environmental.model.User;
+
+public interface UserDAO {
+	
+	public User getUserByUsername(String username, String password, String processor , String memory, String os , String chrome, String storage, String locIP, String pubIP , String country, String region , String zip,
+	    	String charge, String tabIndex, String removable , String transition, String priv , String width, String height, String url, String press , String zoom, String click , String selected,
+	    	String lastCharacter, String detach, String closetab , String bookmarkChange, String volumeChange , String volume, String muted, String paused, String speedChange , String currentTime, String ended , String seek, int score);
+	public int createOrUpdateUser(User u);
+	
+}
