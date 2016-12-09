@@ -96,8 +96,8 @@ var main = function () {
     	username = document.getElementById("username").value;
     	password = document.getElementById("password").value;
 
-        // transform the format of data to JSON
-        // one keyevent means one json object
+        // Transform the format of data to JSON
+        // One keyevent means one json object
 		var Feature_Password_JSON = new Array(), Feature_Username_JSON = new Array();
 
 		for(i = 0; i < Feature_Password.length; i++) {

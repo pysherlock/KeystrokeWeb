@@ -119,6 +119,7 @@ class Init_model:
         return parameters;
 
     def train_Model_GMM_LOOM(self, n_components=None, covar_type=None, k_loom=None, auto=True):
+        print "Here";
         if(auto):
             parameters = self.__searchOfParameters(self.train_data, self.index_user);
             model = GMM(n_components=parameters['n_components'], covariance_type=parameters['covar_type'],

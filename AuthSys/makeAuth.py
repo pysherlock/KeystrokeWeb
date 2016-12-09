@@ -21,7 +21,7 @@ class KeyEvent:
 class MakeAuth:
     """This class provides the main methods which make the final authentication result. The main class of the file"""
 
-    def __init__(self, Profiles, mean, std):
+    def __init__(self, Profiles=None, mean=None, std=None):
         self.Profiles = Profiles;
         self.global_Mean, self.global_Std = mean, std;
 
@@ -31,6 +31,54 @@ class MakeAuth:
             return [False, score[0], threshold];
         else:
             return [True, score[0], threshold];
+
+    def keystroke_Authentication(self, Profile, String, Keystroke):
+        print "Here";
+        KeyVector = [KeyEvent(Keystroke[i]['index'], Keystroke[i]['key'],
+                             Keystroke[i]['which'], Keystroke[i]['time_D'],
+                             Keystroke[i]['time_U']) for i in range(len(Keystroke))];
+
+        ## Deal with typing mistake and generate feature vector
+        ## sort by pressed index. The orginal vector is in sequence of release'
+        Press_Sequence_Keystroke = sorted(KeyVector, key=lambda keyevent: keyevent.index);
+
+        ## Look for user's correct password as reference according to its username
+        ## The real password is used as the reference which helps us to extract the keystroke feature
+        keyextract = KeyExtract();
+        Keystroke = keyextract.extract_Feature(Press_Sequence_Keystroke, String);
+
+        ## Generate feature vectors for each sub-feature,
+        ## four kinds of sub-features: hold-time, DDKL, UDKL, UUKL
+        H_time_Keystroke = [(Keystroke[i].time_U - Keystroke[i].time_D) / 1000
+                           for i in range(len(Keystroke))];
+
+        DDKL_Keystroke = [(Keystroke[i + 1].time_D - Keystroke[i].time_D) / 1000
+                         for i in range(len(Keystroke) - 1)];
+
+        UDKL_Keystroke = [(Keystroke[i + 1].time_D - Keystroke[i].time_U) / 1000
+                         for i in range(len(Keystroke) - 1)];
+
+        # UUKL_Password = [(Password_Keystroke[i + 1].time_U - Password_Keystroke[i].time_U) / 1000
+        #                  for i in range(len(Password_Keystroke) - 1)];
+
+        ## Feature_Vector is the final feature vector which is used to verify user's keystroke
+        ## Generate feature's vector used for authentication
+        Feature_Vector = [];
+        for i in range(len(H_time_Keystroke)):
+            Feature_Vector.append(H_time_Keystroke[i]);
+            if (i < len(DDKL_Keystroke)):
+                Feature_Vector.append(DDKL_Keystroke[i]);
+                Feature_Vector.append(UDKL_Keystroke[i]);
+
+        ## Feature normalization
+        for i in range(len(Feature_Vector)):
+            Feature_Vector[i] = (Feature_Vector[i] - self.global_Mean[i]) / self.global_Std[i];
+
+        ## For demo and testing phase
+        result = self.__make_Auth(Profile['model'],
+                                Profile['threshold'],
+                                np.array(Feature_Vector).reshape(1, -1));
+        return result;
 
     def main_Authentication(self, username, password, Username_keyDict, Password_keyDict):
 

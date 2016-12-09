@@ -30,7 +30,6 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
         try:
             json_rpc = json.loads(message);
-            print "Error: received message is not encoded in correct format (json)";
             print "JSON: ", json_rpc;
             print type(json_rpc);
             username, password = json_rpc['Username']['username'], json_rpc['Password']['password'];
@@ -57,9 +56,11 @@ if __name__ == "__main__":
         PYData = DataProcess("../Dataset/New Users/PUYang.csv");
         CMUData.processOnCMU();
         PYData.process();
-        print "Data pre-process on CMU dataset is finished";
+
+        print "Data pre-process is finished";
 
         ## Build profiles from CMU Data (and my own data)
+        ## Demo part on CMU dataset
         Profiles = dict();
         for index in range(45, 50):
             print index;

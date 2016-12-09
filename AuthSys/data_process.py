@@ -55,6 +55,9 @@ class DataProcess:
             self.Std.append(np.std(self.data[:, i]));
 
         ## Data normalization
+        # if(DataProcess.global_Mean == None and DataProcess.global_Std == None):
+        #     DataProcess.global_Mean, DataProcess.global_Std = self.Mean, self.Std;
+
         self.data = self.Z_normalize(self.data, DataProcess.global_Mean, DataProcess.global_Std);
 
     ## Now this function only deals with the CMU dataset
