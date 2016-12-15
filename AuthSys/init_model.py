@@ -19,7 +19,7 @@ class Init_model:
     ## A very important part in model training
     ## This function needs improvement in the future
     def __searchOfParameters(self, train_data, index_user):
-        kf = cross_validation.KFold(len(train_data), n_folds=4, shuffle=True);
+        kf = cross_validation.KFold(len(train_data), n_folds=5, shuffle=True);
         train_index, test_index = next(iter(kf));
         train, test = train_data[train_index], train_data[test_index];
         if (len(train) < 50):
@@ -41,10 +41,11 @@ class Init_model:
         Opt_EER = dict((covar_type, 0) for covar_type in covariances);
         Opt_K = dict((covar_type, 0) for covar_type in covariances);
 
-        ## extract imposter from the imposter pool
-        ## Now, it is specifically to CMU dataset
+        ## Extract imposter from the imposter pool. Now, all the imposters are coming from CMU dataset
+        ## Uniform the imposter_data's dimension with train_data's
+        imposter_size = len(train_data[0]);
         imposter_user = np.concatenate((self.imposter_features[0:index_user],
-                                        self.imposter_features[index_user + 1:])).reshape(250, 28);
+                                        self.imposter_features[index_user + 1:])).reshape(250, imposter_size);
         genuine_user = np.array(genuine_user);
 
         loo = cross_validation.LeaveOneOut(len(trainSet));
@@ -113,13 +114,13 @@ class Init_model:
 
         ### End of covar_type Loop
         covar_type = min(Opt_EER);  ## choose the minimal EER as the optimal situation
+        print "Minimal EER: ", Opt_EER[covar_type];
         K = Opt_K[covar_type];
         n_components = Opt_n_components[covar_type];
         parameters = {'n_components': n_components, 'covar_type': covar_type, 'K': K};
         return parameters;
 
     def train_Model_GMM_LOOM(self, n_components=None, covar_type=None, k_loom=None, auto=True):
-        print "Here";
         if(auto):
             parameters = self.__searchOfParameters(self.train_data, self.index_user);
             model = GMM(n_components=parameters['n_components'], covariance_type=parameters['covar_type'],

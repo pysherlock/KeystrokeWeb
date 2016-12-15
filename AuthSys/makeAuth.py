@@ -26,6 +26,7 @@ class MakeAuth:
         self.global_Mean, self.global_Std = mean, std;
 
     def __make_Auth(self, model, threshold, feature):
+        print "Make Auth";
         score = model.score(feature);
         if(score < threshold):
             return [False, score[0], threshold];
@@ -33,19 +34,21 @@ class MakeAuth:
             return [True, score[0], threshold];
 
     def keystroke_Authentication(self, Profile, String, Keystroke):
-        print "Here";
+        print "keystroke_auth";
         KeyVector = [KeyEvent(Keystroke[i]['index'], Keystroke[i]['key'],
                              Keystroke[i]['which'], Keystroke[i]['time_D'],
                              Keystroke[i]['time_U']) for i in range(len(Keystroke))];
 
         ## Deal with typing mistake and generate feature vector
-        ## sort by pressed index. The orginal vector is in sequence of release'
+        ## sort by pressed index. The orginal vector is in sequence of release
         Press_Sequence_Keystroke = sorted(KeyVector, key=lambda keyevent: keyevent.index);
+        print len(Press_Sequence_Keystroke)
 
         ## Look for user's correct password as reference according to its username
         ## The real password is used as the reference which helps us to extract the keystroke feature
         keyextract = KeyExtract();
         Keystroke = keyextract.extract_Feature(Press_Sequence_Keystroke, String);
+        print "String that user typed:", String;
 
         ## Generate feature vectors for each sub-feature,
         ## four kinds of sub-features: hold-time, DDKL, UDKL, UUKL
@@ -75,8 +78,7 @@ class MakeAuth:
             Feature_Vector[i] = (Feature_Vector[i] - self.global_Mean[i]) / self.global_Std[i];
 
         ## For demo and testing phase
-        result = self.__make_Auth(Profile['model'],
-                                Profile['threshold'],
+        result = self.__make_Auth(Profile['model'],Profile['threshold'],
                                 np.array(Feature_Vector).reshape(1, -1));
         return result;
 

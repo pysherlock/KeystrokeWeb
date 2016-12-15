@@ -5,6 +5,10 @@
 import SocketServer
 import threading
 import json
+import pickle
+import MySQLdb
+import os
+from sklearn.externals import joblib
 from init_model import Init_model
 from makeAuth import MakeAuth
 from data_process import DataProcess
@@ -14,37 +18,59 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         data = self.request.recv(4096);
         cur_thread = threading.current_thread();
-        print cur_thread," : ", data;
+        print cur_thread, " : ", data;
 
         try:
-            PYData_clp = DataProcess("../Dataset/New Users/PUYang_clp.csv");
-            CMUData = DataProcess("../Dataset/Kevin and Maxion/DSL-StrongPasswordData_new.csv");
-
-            CMUData.processOnCMU();
-            PYData_clp.process();
-
             json_rpc = json.loads(data);
-            userID, officeID, Keystroke = json_rpc['id'], json_rpc['officeID'], json_rpc['keystroke'];
+            username, userID = json_rpc['username'], json_rpc['id'];
+            officeID, Keystroke = json_rpc['officeID'], json_rpc['keystroke'];
+            keystroke_threshold = json_rpc['keystroke_threshold'];
+            keystroke_filePath = "../Dataset/New Users/" + username + ".pkl";
+
             print json.loads(str(Keystroke).replace("\\", ""));
             Keystroke = json.loads(str(Keystroke).replace("\\", ""));
             print type(Keystroke), Keystroke;
             print Keystroke['keystroke'];
             ## This part for keystroke json string is not enough reliable.
-            ## We'd better to find a general way to deal with it
+            ## We'd better to find a uniform way to deal with it
 
-            ## For now, maybe user CMU dataset to make some fake imposters
-            ## Cut the dimension coorespond to clp Data's dimension
-            Imposter = CMUData.imposter[:, :, 0:len(PYData_clp.data[0])];
-            print Imposter.shape;
-            print PYData_clp.data.shape;
-            model = Init_model(imposters=Imposter, train_data=PYData_clp.data, index_user=userID);
-            Profile = model.train_Model_GMM_LOOM();
+            if(os.path.isfile(keystroke_filePath)): ## check whether user's keystroke profile exists
+                ## Read the model and keystroke_threshold from the DB
+                Profile = dict({'model': joblib.load(keystroke_filePath), 'threshold': keystroke_threshold});
+            else: ## Can't read keystroke model, train a new profile for this user
+                Data_clp = DataProcess("../Dataset/New Users/" + username + "_clp.csv");
+                Data_clp.process();
 
-            ## Profile = pickle.loads(Keystroke model path);
+                ## For now, maybe user CMU dataset to make some fake imposters
+                ## Cut the dimension coorespond to clp Data's dimension
+                Imposter = CMUData.imposter[:, :, 0:len(Data_clp.data[0])];
+                print Imposter.shape;
+                print Data_clp.data.shape;
+                model = Init_model(imposters=Imposter, train_data=Data_clp.data, index_user=userID);
+                Profile = model.train_Model_GMM_LOOM();
+                joblib.dump(Profile['model'], keystroke_filePath);
+                keystroke_threshold = round(Profile['threshold'], 4);
 
+                ## Connect DB to update the keystroke threshold
+                db = MySQLdb.connect("localhost", "root", "ypu123123", "mydb1", port=3306);
+                cur = db.cursor();
+                # print cursor.fetchone();
+                sql = "UPDATE users SET `keystroke threshold`=%f WHERE id=%d" \
+                      %(keystroke_threshold, userID)
+
+                print sql;
+                try:
+                    print "Write to DB";
+                    cur.execute(sql);
+                    db.commit();
+                except:
+                    print "Exception";
+                    db.rollback();
+                finally:
+                    db.close();
 
             auth = MakeAuth(mean=DataProcess.global_Mean, std = DataProcess.global_Std);
-            result = auth.keystroke_Authentication(Profile=Profile, String=officeID, keystroke=Keystroke['keystroke']);
+            result = auth.keystroke_Authentication(Profile=Profile, String=officeID, Keystroke=Keystroke['keystroke']);
 
             print "Send back: ", result;
             self.request.sendall(str(result[0]).encode('utf-8'));
@@ -59,6 +85,10 @@ if __name__ == "__main__":
 
     my_server = SocketServer.ThreadingTCPServer((HOST, PORT), ThreadedTCPRequestHandler);
     ip, port = my_server.server_address;
+
+    ## Load universal dataset (Here means CMU dataset)
+    CMUData = DataProcess("../Dataset/Kevin and Maxion/DSL-StrongPasswordData_new.csv");
+    CMUData.processOnCMU();
 
     server_thread = threading.Thread(target=my_server.serve_forever());
     # Exit the server thread when the main thread terminates
