@@ -32,7 +32,10 @@ class Init_model:
             else:
                 genuine_user = train_data;
 
-        n_components_range = range(1, 50);  ## num_components: 1~50
+        # n_components_range = range(1, 50);  ## num_components: 1~50
+        num_com = len(train);
+        if(num_com > 50): num_com = 50;
+        n_components_range = range(1, num_com);
         K_range = np.arange(0.01, 2.01, 0.01);  ## 0.01~1.99, variance is 0.01
         # covariances = ['spherical', 'diag', 'full', 'tied'];
         covariances = ['diag'];  ## seems like the best covar_type is 'diag' surely
@@ -44,8 +47,10 @@ class Init_model:
         ## Extract imposter from the imposter pool. Now, all the imposters are coming from CMU dataset
         ## Uniform the imposter_data's dimension with train_data's
         imposter_size = len(train_data[0]);
+        imposter_num = (len(self.imposter_features)-1) * len(self.imposter_features[0]);
         imposter_user = np.concatenate((self.imposter_features[0:index_user],
-                                        self.imposter_features[index_user + 1:])).reshape(250, imposter_size);
+                                        self.imposter_features[index_user + 1:])
+                                       ).reshape(imposter_num, imposter_size);
         genuine_user = np.array(genuine_user);
 
         loo = cross_validation.LeaveOneOut(len(trainSet));
@@ -151,5 +156,5 @@ class Init_model:
         ## Train the GMM model. Profile includes a GMM model and a threshold
         model.fit(self.train_data);
         self.profile = dict({'model': model, 'threshold': threshold});
-        print "Train size: ", len(self.train_data), " K_LOOM: ", k_loom, " profile: ", self.profile;
+        print "Train size: ", len(self.train_data), "Imposter num: ", len(self.imposter_features), " K_LOOM: ", k_loom, " profile: ", self.profile;
         return self.profile;
