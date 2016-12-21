@@ -48,7 +48,7 @@ class MakeAuth:
         ## The real password is used as the reference which helps us to extract the keystroke feature
         keyextract = KeyExtract();
         Keystroke = keyextract.extract_Feature(Press_Sequence_Keystroke, String);
-        print "String that user typed:", String;
+        print len(Keystroke);
 
         ## Generate feature vectors for each sub-feature,
         ## four kinds of sub-features: hold-time, DDKL, UDKL, UUKL
@@ -77,6 +77,7 @@ class MakeAuth:
         for i in range(len(Feature_Vector)):
             Feature_Vector[i] = (Feature_Vector[i] - self.global_Mean[i]) / self.global_Std[i];
 
+        print len(Feature_Vector);
         ## For demo and testing phase
         result = self.__make_Auth(Profile['model'],Profile['threshold'],
                                 np.array(Feature_Vector).reshape(1, -1));
@@ -193,9 +194,7 @@ class KeyExtract:
             i += 1;
 
     def extract_Feature(self, Press_Sequence, Reference):
-        print Press_Sequence;
         self.RemoveMistake(Press_Sequence);
-        print Press_Sequence;
 
         Feature = [];
         i = len(Press_Sequence) - 1;
@@ -206,7 +205,6 @@ class KeyExtract:
                 ## if the char is in upper case, and the previous pressed key is 'shift'
                 ## if so, take the 'shift' into the feature vector
                 if (Press_Sequence[i].key.isupper() and Press_Sequence[i - 1].which == 16):
-                    print Press_Sequence[i].key;
                     Feature.append(Press_Sequence[i - 1]);
 
                 Feature.append(Press_Sequence[i]);

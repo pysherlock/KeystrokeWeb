@@ -511,7 +511,6 @@ class FMtool:
 		# int IsMeasureselfdual(double* v,unsigned int m)
 		return self._libfmtools.IsMeasureselfdual(self._v, self._m)
 
-
 	def setAtLeastWeights(self, k):
 		"""
 		Calculates and sets the appropriate weighting vector for the OWA aggregation by applying the rule 'at least k (out of n) criteria'.
@@ -566,19 +565,19 @@ class FMtool:
 		"""
 		self._p = numpy.asarray(p, dtype=numpy.float32)
 
-        def helpDefineImportances(self, **kwargs):
-                """
-                Helper method to automatically define the importance weights as used in WOWA (the 'p' vector).
-                Syntax for keyword arguments is: c1='h', c2='hh', c3='l', ... (where 'hh'=very high, 'h'=high, 'l'=low, 'll'=very low)
-                """
-                avg_val = 1.0 / self._n
+	def helpDefineImportances(self, **kwargs):
+		"""
+		Helper method to automatically define the importance weights as used in WOWA (the 'p' vector).
+		Syntax for keyword arguments is: c1='h', c2='hh', c3='l', ... (where 'hh'=very high, 'h'=high, 'l'=low, 'll'=very low)
+		"""
+		avg_val = 1.0 / self._n
 		p = [avg_val for i in range(0,self._n)]
 		crit_list = ['c'+str(i) for i in range(1,self._n+1)]
 
 		if len(kwargs) > 0:
 			for k,v in kwargs.items():
 
-                                if k in crit_list:
+				if k in crit_list:
 
 					idx = crit_list.index(k)
 

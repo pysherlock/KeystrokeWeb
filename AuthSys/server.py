@@ -27,10 +27,11 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
             keystroke_threshold = json_rpc['keystroke_threshold'];
             keystroke_filePath = "../Dataset/New Users/" + username + ".pkl";
 
-            print json.loads(str(Keystroke).replace("\\", ""));
-            Keystroke = json.loads(str(Keystroke).replace("\\", ""));
+            Keystroke = json.loads(str(Keystroke).replace("\\", ""))['keystroke'];
             print type(Keystroke), Keystroke;
-            print Keystroke['keystroke'];
+            for i in range(len(Keystroke)):
+                Keystroke[i]['key'] = Keystroke[i]['key'].upper();
+            print Keystroke;
             ## This part for keystroke json string is not enough reliable.
             ## We'd better to find a uniform way to deal with it
 
@@ -70,14 +71,15 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                     db.close();
 
             auth = MakeAuth(mean=DataProcess.global_Mean, std = DataProcess.global_Std);
-            result = auth.keystroke_Authentication(Profile=Profile, String=officeID, Keystroke=Keystroke['keystroke']);
+            result = auth.keystroke_Authentication(Profile=Profile, String=officeID, Keystroke=Keystroke);
 
             print "Send back: ", result;
             self.request.sendall(str(result[0]).encode('utf-8'));
 
         except (ValueError, KeyError) as e:
             print "Error: received message is not encoded in correct format: ", e.message;
-            self.request.sendall("Server Error");
+            ##self.request.sendall("Error");
+            self.request.sendall("False");
 
 if __name__ == "__main__":
     print "Main procedure";

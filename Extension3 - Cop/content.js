@@ -194,6 +194,7 @@ function myFunction(){
     Feature_Keystroke.splice(0, Feature_Keystroke.length);
     Text.splice(0, Text.length);
     PressedIndex.index = -1;
+    
 });}
 
 /*window.onload = function () { 

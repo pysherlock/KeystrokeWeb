@@ -1,7 +1,6 @@
 /**
  *
  */
-
 function KEY(index, key, which, downtime, uptime) {
 	this.index = index;
 	this.key = key;
