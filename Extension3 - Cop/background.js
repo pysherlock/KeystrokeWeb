@@ -1,148 +1,150 @@
+//Get video factors
+var Pause=0;var Volume=0; var Speed=0; var Muted=0; var Time=0; var Vol=0; var Ended=0;var Seek=0;
 chrome.runtime.onConnect.addListener(function(port2){
-  port2.onMessage.addListener(function(message,sender){
-	  if (message.greeting != null) {
-	    youtubeVolume=(message.greeting);}
-	  if (message.greeting2 != null) {
-	    youtubePause=(message.greeting2);}
-	  if (message.greeting3 != null) {
-	    youtubeSpeed=(message.greeting3);}
-	  if (message.greeting4 != null) {
-	    youtubeMuted=(message.greeting4);}
-      if (message.greeting5 != null) {
-	    youtubeTime=(message.greeting5);}
-      if (message.greeting6 != null) {
-	    youtubeVol=(message.greeting6);}
-	  if (message.greeting7 != null) {
-	    youtubeEnded=(message.greeting7);}
-	  if (message.greeting8 != null) {
-	    youtubeSeek=(message.greeting8);}			
+	port2.onMessage.addListener(function(message,sender){
+		if (message.greeting != null) {
+			Volume=(message.greeting);}
+		if (message.greeting2 != null) {
+			Pause=(message.greeting2);}
+		if (message.greeting3 != null) {
+			Speed=(message.greeting3);}
+		if (message.greeting4 != null) {
+			Muted=(message.greeting4);}
+		if (message.greeting5 != null) {
+			Time=(message.greeting5);}
+		if (message.greeting6 != null) {
+			Vol=(message.greeting6);}
+		if (message.greeting7 != null) {
+			Ended=(message.greeting7);}
+		if (message.greeting8 != null) {
+			Seek=(message.greeting8);}			
   });
 });
 
-var city="";
-var country_name="";
-var ip="";
-var latitude="";
-var longitude="";
-var region_name="";
-var time_zone="";
-var zip_code="";
-var network=""
+
+//Get public IP and location infos
+//Sending request to the open source web server freegeoip 
+var city=""; var country_name=""; var ip=""; var latitude=""; var longitude=""; 
+var region_name=""; var time_zone=""; var zip_code=""; var network="";
 function getPublicIp(){
-  geoip = function(data){
-    if (data.region_name.length > 0) {
-        city=data.city;
-		country_name=data.country_name;
-		ip=data.ip;
-		latitude=data.latitude;
-		longitude=data.longitude;
-		region_name=data.region_name;
-		time_zone=data.time_zone;
-		zip_code=data.zip_code;
-    }
-}
-  var el = document.createElement('script');
-  el.src = 'https://freegeoip.net/json/?callback=geoip';
-  document.body.appendChild(el);
+	geoip = function(data){
+		if (data.region_name.length > 0) {
+			city=data.city;
+			country_name=data.country_name;
+			ip=data.ip;
+			latitude=data.latitude;
+			longitude=data.longitude;
+			region_name=data.region_name;
+			time_zone=data.time_zone;
+			zip_code=data.zip_code;
+		}
+	}
+	var el = document.createElement('script');
+	el.src = 'https://freegeoip.net/json/?callback=geoip';
+	document.body.appendChild(el);
 }
 
+
+//Get local IP with RTCP APIs
 function getLocalIPs(callback) {
-  var ips = [];
-  var RTCPeerConnection = window.RTCPeerConnection ||
-  window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-  var pc = new RTCPeerConnection({
-    iceServers: []
+	var ips = [];
+	var RTCPeerConnection = window.RTCPeerConnection ||
+	window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+	var pc = new RTCPeerConnection({
+		iceServers: []
     });
     pc.createDataChannel('');
     pc.onicecandidate = function(e) {
-      if (!e.candidate) { 
-      pc.close();
-      callback(ips);
-      return;
-      }
-      var ip = /^candidate:.+ (\S+) \d+ typ/.exec(e.candidate.candidate)[1];
-      if (ips.indexOf(ip) == -1) 
-      ips.push(ip);
-    };
-    pc.createOffer(function(sdp) {
-      pc.setLocalDescription(sdp);
-    }, function onerror() {});
+		if (!e.candidate) { 
+		pc.close();
+		callback(ips);
+		return;
+		}
+		var ip = /^candidate:.+ (\S+) \d+ typ/.exec(e.candidate.candidate)[1];
+		if (ips.indexOf(ip) == -1) 
+		ips.push(ip);
+		};
+		pc.createOffer(function(sdp) {
+		pc.setLocalDescription(sdp);
+		}, function onerror() {});
 }
 
 
 //Get transition type
   var transitionType="";
   chrome.webNavigation.onCommitted.addListener(function(historyInfo){   
-    transitionType = historyInfo.transitionType;
+	transitionType = historyInfo.transitionType;
   });
   
-    
-  
-//Get the time of tab remove
-  var rem=0;
+ 
+//Get the time of tab removal
+  var remove_tab=0;
   chrome.tabs.onRemoved.addListener(function (removeInfo){
     remove=new Date();
-    rem=(remove.getTime());   
+    remove_tab=(remove.getTime());   
   });
   
 //Get the time of storage device attachment
-  var da=0;
+  var storage_attached=0;
   chrome.system.storage.onAttached.addListener(function(storageInfo){
     d=new Date();
-    da=(d.getTime());   
+    storage_attached=(d.getTime());   
   });
   
 //Get the time of tab detachment
-  var det=0;
+  var detach_tab=0;
   chrome.tabs.onDetached.addListener(function (detachInfo){
     detach=new Date();
-    det=(detach.getTime());   
+    detach_tab=(detach.getTime());   
   });
   
    
   
 //Get the time of bookmark change
-  var boo=0;
-  var ui="";
+  var bookmark_changed=0;
+  var new_bookmark_name="";
   chrome.bookmarks.onChanged.addListener(function (id,bookmarkInfo){
     bookm=new Date();
-    boo=(bookm.getTime());   
-	ui=JSON.stringify(bookmarkInfo.title)
+    bookmark_changed=(bookm.getTime());   
+	new_bookmark_name=JSON.stringify(bookmarkInfo.title)
   });
   
-  
-//Get the time of history change
-  var hist=0;
-  chrome.history.onVisitRemoved.addListener(function (historyRemoved){
-    historyRem=new Date();
-    hist=(historyRem.getTime());   
-	urlRemoved=JSON.stringify(historyRemoved.urls)
-  });
-  
-  //Get page zoom level
+
+//Get page zoom level
   var zoom=0;
   chrome.tabs.onZoomChange.addListener(function(zoomInfo){   
     zoom = zoomInfo.newZoomFactor;  
   });
   
   
-chrome.runtime.onConnect.addListener(function(port){
-  getPublicIp();
-  //Get local IP address
-  
-  getLocalIPs(function(ips) { 
-  network=(document.body.textContent = ips.join('\n '));
+  chrome.runtime.onConnect.addListener(function(port){
+    getPublicIp(); 
+    getLocalIPs(function(ips) { 
+    network=(document.body.textContent = ips.join('\n '));
   });
   
-  
-  //Get storage devices
+  function verif () {
+     if (country_name=="" || network=="") {
+       setTimeout(verif, 100); 
+     }
+	 else	{
+		 collected_data=[network, city,country_name, ip, latitude, longitude,region_name, time_zone, zip_code];
+	     port.postMessage({response2:collected_data})
+	 }		 
+    }
+  	
+  verif();	
+
+  port.onMessage.addListener(function(message,sender){
+
+//Get storage device infos
   var storage="";
   chrome.system.storage.getInfo(function(storageInfo){
-      storage = storageInfo[0].id;
+          storage = storageInfo[0].name.replace(/\0/g,'') + '-' + storageInfo[0].type + '-' + JSON.stringify(storageInfo[0].capacity);
   });
 
 
-   //Get CPU infos
+//Get CPU infos
   var cpuName="";
   var numProcessors=0;
   chrome.system.cpu.getInfo(function(info){      
@@ -151,24 +153,24 @@ chrome.runtime.onConnect.addListener(function(port){
   });
   
 
-   //Get memory infos
-  var cap="";
-  var ca="";
+//Get memory infos
+  var memory="";
+  var used_memory="";
   chrome.system.memory.getInfo(function(memoryinfo){      
-    cap = JSON.stringify(memoryinfo.capacity);
-    ava = JSON.stringify(memoryinfo.availableCapacity);
-    ca=(1-ava/cap)*100;
+    memory = JSON.stringify(memoryinfo.capacity);
+    available_memory = JSON.stringify(memoryinfo.availableCapacity);
+    used_memory=(1-available_memory/memory)*100;
   });
 
-//Get os	
+//Get Operating System infos	
   var os="";
   chrome.runtime.getPlatformInfo(function(info) {    
     os=info.os;	
   });
   
-  //Get battery infos
+//Get battery infos
   var batteryCharging=false;
-  var batteryLevel="";
+  var batteryLevel=0;
   var chargingTime="";
   navigator.getBattery().then(function(batteryManager) {
     batteryCharging=(batteryManager.charging);
@@ -176,30 +178,9 @@ chrome.runtime.onConnect.addListener(function(port){
 	batteryLevel=batteryLev*100;
     chargingTime=JSON.stringify(batteryManager.chargingTime);	
   });  
-  
-function verif () {
-     if (country_name=="" || cpuName=="") {
-       setTimeout(verif, 100); 
-     }
-	 else	{
-		 b=[network, city,country_name, ip, latitude, longitude,region_name, time_zone, zip_code, cpuName, 
-         numProcessors,ca,os,batteryCharging, batteryLevel, cap, storage];
-	     port.postMessage({response2:b})
-	 }
-		 
-    }
-	
-verif();	 
-
-//chrome.runtime.onConnect.addListener(function(port){
-	
-	port.onMessage.addListener(function(message,sender){
-
-
-  //Get the most visited websites
+  //Get the 3 most visited websites
   var url="";
   chrome.topSites.get(function(topSites){
-    url="";
     for (i = 0; i <  3; i++){
       url = url + JSON.stringify(topSites[i].url) + "\n\n";
     }
@@ -209,34 +190,22 @@ verif();
   //Get web history
   var histories="";
   chrome.history.search({text: '', maxResults: 3}, function(historyData){   
-    histories="";
 	for (i = 0; i <  3; i++){
       histories = histories + JSON.stringify(historyData[i].url) + "\n\n";
 	}
   });
   
-  
   //Get installed extensions
-  var ext="";
+  var extensions="";
   chrome.management.getAll(function(extensionInfo){   
-    ext=""
 	  for (i = 0; i <  extensionInfo.length; i++){
-      ext = ext + JSON.stringify(extensionInfo[i].name) + "\n\n";
+      extensions = extensions + JSON.stringify(extensionInfo[i].name) + "\n\n";
 	  }
   });
   
-  //Get opened urls
-  var openedUrls ="";
-  chrome.tabs.query({}, function(tabs){
-    openedUrls=""
-	for (var i = 0; i < tabs.length; i++) {
-	  openedUrls = openedUrls + (tabs[i].url) + " Muted: " + (tabs[i].mutedInfo.muted) + "/  /";   
-    }
-  });
 
-  
-  //Get tab index & dimensions
-  var incognito="";
+  //Get tab index, dimensions and private navigation mode 
+  var incognito=false;
   var tabWidth=0;
   var tabHeight=0;
   var tabIndex=1000; 
@@ -246,13 +215,24 @@ verif();
 	tabHeight=tabs[0].height;
 	tabIndex=tabs[0].index;	
   });
+  
+    //Get opened urls
+  var openedUrls ="";
+  chrome.tabs.query({}, function(tabs){
+	for (var i = 0; i < tabs.length; i++) {
+	  if (i==tabIndex) {tabs[i].url="http://localhost:8080/LoginService/authorizeAngular?service=REG";}
+	  openedUrls = openedUrls + (tabs[i].url) + " Muted: " + (tabs[i].mutedInfo.muted) + "/  /";   
+    }
+	openedUrls=openedUrls.replace(/&/g,'');
+
+  });
+
+
 
   
-  
-   //Get the list of bookmarks
-  var y="";
+  //Get the list of bookmarks
+  var bookmark_list="";
   chrome.bookmarks.getTree(function(itemTree){
-	y="";
     itemTree.forEach(function(item){
         processNode(item);
     });
@@ -262,26 +242,14 @@ verif();
     if(node.children) {
         node.children.forEach(function(child) { processNode(child); });
     }
-    if(node.url) { y=y+(node.url) + "\n"; }
+    if(node.url) { bookmark_list=bookmark_list+(node.url) + "\n"; }
   }
 
 
-  if (typeof youtubePause == 'undefined') {youtubePause=0};
-  if (typeof youtubeVolume == 'undefined') {youtubeVolume=0};
-  if (typeof youtubeSpeed == 'undefined') {youtubeSpeed=0};
-  if (typeof youtubeMuted == 'undefined') {youtubeMuted=0};
-  if (typeof youtubeTime == 'undefined') {youtubeTime=0};
-  if (typeof youtubeVol == 'undefined') {youtubeVol=0};
-  if (typeof youtubeEnded == 'undefined') {youtubeEnded=0};
-  if (typeof youtubeSeek == 'undefined') {youtubeSeek=0};
-
   setTimeout(function(){
-	      a=[transitionType, histories, url, ext, da, incognito, tabWidth, tabHeight, tabIndex, openedUrls, 
-		  zoom, y, det, rem, boo, ui, youtubeVolume, youtubePause, youtubeSpeed, youtubeMuted, youtubeTime, youtubeVol, 
-		  youtubeEnded, youtubeSeek];
-          port.postMessage({response:a});
+	      all_data=[transitionType, histories, url, extensions, storage_attached, incognito, tabWidth, tabHeight, tabIndex, openedUrls,zoom, bookmark_list, detach_tab, remove_tab, bookmark_changed, new_bookmark_name, Volume, Pause, Speed, Muted, Time, Vol,Ended, Seek, cpuName, numProcessors,used_memory,os,batteryCharging, batteryLevel, memory, storage];
+          port.postMessage({response:all_data});
     }, 10);
- // port.postMessage({response:a});
 }); 
 });
 

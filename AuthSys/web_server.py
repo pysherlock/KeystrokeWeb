@@ -14,7 +14,7 @@ from data_process import DataProcess
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         print "Handle GET request";
-        self.write("Hello, world");
+        self.write("Hello World");
 
 class WebSocket(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):

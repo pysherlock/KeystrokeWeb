@@ -24,7 +24,8 @@
   {  
     "js": ["jquery-3.1.0.js" , "content.js"],
     "matches": [
-      "http://localhost:8080/LoginService/authorizeAngular?service=REG"
+      "http://localhost:8080/LoginService/authorizeAngular?service=REG",
+	  "http://localhost:8080/LoginService/index.jsp"
     ]
     
   },
@@ -32,7 +33,7 @@
   {  
     "js": ["jquery-3.1.0.js" , "content2.js"],
     "matches": [
-      "https://*.youtube.com/*"
+      "https://amadeus-hospitality.com/central-reservations-system/"
     ]
     
   }

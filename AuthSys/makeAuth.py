@@ -203,9 +203,10 @@ class KeyExtract:
         while (i >= 0 and j >= 0):
             if (Press_Sequence[i].key == Reference[j]):
                 ## if the char is in upper case, and the previous pressed key is 'shift'
-                ## if so, take the 'shift' into the feature vector
-                if (Press_Sequence[i].key.isupper() and Press_Sequence[i - 1].which == 16):
-                    Feature.append(Press_Sequence[i - 1]);
+                ## options: 1. if so, take the 'shift' into the feature vector
+                ## 2. instead of taking 'shift' into account, jump over the 'shift'
+                # if (Press_Sequence[i].key.isupper() and Press_Sequence[i - 1].which == 16):
+                #     Feature.append(Press_Sequence[i - 1]);
 
                 Feature.append(Press_Sequence[i]);
                 j -= 1;

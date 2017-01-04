@@ -5,13 +5,13 @@
 import SocketServer
 import threading
 import json
-import pickle
 import MySQLdb
 import os
 from sklearn.externals import joblib
 from init_model import Init_model
 from makeAuth import MakeAuth
 from data_process import DataProcess
+from profileUpdate import ProfileUpdate
 
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
@@ -35,6 +35,29 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
             ## This part for keystroke json string is not enough reliable.
             ## We'd better to find a uniform way to deal with it
 
+            ## Fuzzy Measure Part
+            db = MySQLdb.connect("localhost", "root", "ypu123123", "mydb1", port=3306);
+            cursor = db.cursor();
+            sql = "SELECT * FROM users WHERE username = '%s'" %(username);
+            try:
+                cursor.execute(sql);
+                results = cursor.fetchall();
+                print results;
+                for row in results:
+                    signInTimes = row[3];
+                    press = row[4];
+                    closetab = row[5];
+                    tabindex = row[6];
+                    ## TODO: how to initialized factor variables, let the factors be consistent to the Database
+
+                print "press=%d, closetab=%d, tabindex=%d" %(press, closetab, tabindex);
+
+            except:
+                print "Error: unable to fetch data";
+
+            db.close();
+
+            ## keystroke authentication
             if(os.path.isfile(keystroke_filePath)): ## check whether user's keystroke profile exists
                 ## Read the model and keystroke_threshold from the DB
                 Profile = dict({'model': joblib.load(keystroke_filePath), 'threshold': keystroke_threshold});
@@ -56,8 +79,9 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                 db = MySQLdb.connect("localhost", "root", "ypu123123", "mydb1", port=3306);
                 cur = db.cursor();
                 # print cursor.fetchone();
-                sql = "UPDATE users SET `keystroke threshold`=%f WHERE id=%d" \
-                      %(keystroke_threshold, userID)
+                print username;
+                sql = "UPDATE users SET `keystroke threshold`=%f WHERE `username`='%s'" \
+                      %(keystroke_threshold, username)
 
                 print sql;
                 try:
@@ -72,6 +96,13 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
             auth = MakeAuth(mean=DataProcess.global_Mean, std = DataProcess.global_Std);
             result = auth.keystroke_Authentication(Profile=Profile, String=officeID, Keystroke=Keystroke);
+
+            ## Update User's Profile, the update functionality of Progressive Password
+            if(signInTimes >= 10 and str(result[0])=='True'):
+                DB = MySQLdb.connect("localhost", "root", "ypu123123", "mydb1", port=3306);
+                profileupdate = ProfileUpdate(username=username, logfile="../Dataset/Users Log/" + username + "_Log.csv",
+                                              database=DB);
+                profileupdate.Update();
 
             print "Send back: ", result;
             self.request.sendall(str(result[0]).encode('utf-8'));

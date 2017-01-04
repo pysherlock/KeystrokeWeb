@@ -780,4 +780,7 @@ def test_WOWA():
 
 
 if __name__ == '__main__':
+	# test2()
 	test_WOWA()
+	# test2()
+
