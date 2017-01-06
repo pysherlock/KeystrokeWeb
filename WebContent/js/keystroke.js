@@ -137,6 +137,7 @@ var main = function () {
 
 		connection.send(Feature_JSON);
 
+        // Reset variables used to record keystroke
 	    Feature_Password.splice(0, Feature_Password.length);
 	    Feature_Username.splice(0, Feature_Username.length);
 	    Username_text.splice(0, Username_text.length);
