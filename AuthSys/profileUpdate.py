@@ -12,6 +12,7 @@ class ProfileUpdate:
 
     def __WriteToDB(self, factor, value, dtype):
         cur = self.__database.cursor();
+        sql = None;
         if dtype == 'f':
             sql = "UPDATE users SET %s=%f WHERE `username`='%s'" \
               % (factor, value, self.__username);

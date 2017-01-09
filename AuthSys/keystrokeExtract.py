@@ -12,7 +12,8 @@ class KeyEvent:
         self.time_U = time_U;
         KeyEvent.keyCount += 1;
 
-"""This class provides all the methods which extract the keystroke feature from the front-end's raw data"""
+"""This file provides all the functions which extract the keystroke feature from the front-end's raw data"""
+
 def isPrintable(text):
     printset = set(string.printable);
     return set(text).issubset(printset);
@@ -76,12 +77,12 @@ def collectKeystroke(String, Keystroke):
     ## Deal with typing mistake and generate feature vector
     ## sort by pressed index. The orginal vector is in sequence of release
     Press_Sequence_Keystroke = sorted(KeyVector, key=lambda keyevent: keyevent.index);
-    print len(Press_Sequence_Keystroke)
+    print "Length of Keystroke's Keyevent Pressed Sequence: ", len(Press_Sequence_Keystroke)
 
     ## Look for user's correct password as reference according to its username
     ## The real password is used as the reference which helps us to extract the keystroke feature
     Keystroke = extract_Feature(Press_Sequence_Keystroke, String);
-    print len(Keystroke);
+    print "Length of well-processed Keystroke Keyevent Sequence: ", len(Keystroke);
 
     ## Generate feature vectors for each sub-feature,
     ## four kinds of sub-features: hold-time, DDKL, UDKL, UUKL
@@ -101,9 +102,10 @@ def collectKeystroke(String, Keystroke):
     ## Generate feature's vector used for authentication
     Feature_Vector = [];
     for i in range(len(H_time_Keystroke)):
-        Feature_Vector.append(H_time_Keystroke[i]);
+        ## Remain the first 4 digits after the decimal point
+        Feature_Vector.append(round(H_time_Keystroke[i], 4));
         if (i < len(DDKL_Keystroke)):
-            Feature_Vector.append(DDKL_Keystroke[i]);
-            Feature_Vector.append(UDKL_Keystroke[i]);
+            Feature_Vector.append(round(DDKL_Keystroke[i], 4));
+            Feature_Vector.append(round(UDKL_Keystroke[i], 4));
 
     return Feature_Vector;

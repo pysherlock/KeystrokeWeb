@@ -13,7 +13,7 @@ class MakeAuth:
         self.global_Mean, self.global_Std = mean, std;
 
     def __make_Auth(self, model, threshold, feature):
-        print "Make Auth";
+        print "Make the Result of Keystroke Authentication";
         score = model.score(feature);
         if(score < threshold):
             return [False, score[0], threshold];
@@ -28,7 +28,7 @@ class MakeAuth:
         for i in range(len(KeystrokeFeature)):
             KeystrokeFeature[i] = (KeystrokeFeature[i] - self.global_Mean[i]) / self.global_Std[i];
 
-        print len(KeystrokeFeature);
+        print "Amount of Keystroke Features: ", len(KeystrokeFeature);
 
         ## For demo and testing phase
         result = self.__make_Auth(Profile['model'],Profile['threshold'],

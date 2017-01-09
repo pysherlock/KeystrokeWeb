@@ -1,9 +1,9 @@
 from __future__ import print_function
 import httplib2
 import os
-from email.mime.text import MIMEText
 import base64
 
+from email.mime.text import MIMEText
 from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
@@ -24,6 +24,7 @@ CLIENT_SECRET_FILE = '../client_secret.json'
 APPLICATION_NAME = 'Gmail API Python Quickstart'
 SRC_MAIL_ADDRESS = 'pu.leo.yang@gmail.com'
 
+## TODO: optimize the mail content
 PROFILE_UPDATE = '''Dear user,\n\n
                     According to your login habit, our system changed your profile of Environmental Login,
                     so that the new profile could follow your new habit. \n
@@ -122,6 +123,7 @@ class SendNotificationMail:
         Creates a Gmail API service object and outputs a list of label names
         of the user's Gmail account.
         """
+        print ("\n******Sending Notification Email*****")
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('gmail', 'v1', http=http)
@@ -132,8 +134,8 @@ class SendNotificationMail:
         elif self._type == 2:
             msg_body = KEYSTROKE_UPDATE
 
-        print ("Dst mail address: ", self._dst, type(self._dst))
-        message = self.CreateMessage(SRC_MAIL_ADDRESS, 'pu.leo.yang@gmail.com',
+        print ("Dst mail address: ", self._dst , type(self._dst))
+        message = self.CreateMessage(SRC_MAIL_ADDRESS, self._dst,
                                 "Notification: Authentication Profile is Updated", msg_body)
 
         self.SendMessage(service, "me", message)
