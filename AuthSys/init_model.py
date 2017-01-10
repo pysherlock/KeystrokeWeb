@@ -1,13 +1,12 @@
-import os
-import string
-import random
 import numpy as np
 from sklearn.mixture import GMM
 from sklearn import cross_validation
 
 class Init_model:
-    """ This class provides methods to train the GMM model for user behavior analyse. Including searching the optimal parameters,
-    and training model."""
+    """
+    This class provides methods to train the GMM model for user behavior analyse.
+    Including searching the optimal parameters,and training model.
+    """
 
     def __init__(self, imposters, train_data, index_user, profile = None):
         self.imposter_features = imposters; ## Imposter pool for search parameters

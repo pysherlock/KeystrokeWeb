@@ -123,7 +123,7 @@ class SendNotificationMail:
         Creates a Gmail API service object and outputs a list of label names
         of the user's Gmail account.
         """
-        print ("\n******Sending Notification Email*****")
+        print ("\n**** Sending Notification Email ***")
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('gmail', 'v1', http=http)
