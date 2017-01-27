@@ -23,7 +23,6 @@ chrome.runtime.onConnect.addListener(function(port2){
 
 
 //Get public IP and location infos
-//Sending request to the open source web server freegeoip 
 var city=""; var country_name=""; var ip=""; var latitude=""; var longitude=""; 
 var region_name=""; var time_zone=""; var zip_code=""; var network="";
 function getPublicIp(){
@@ -45,7 +44,7 @@ function getPublicIp(){
 }
 
 
-//Get local IP with RTCP APIs
+//Get local IP 
 function getLocalIPs(callback) {
 	var ips = [];
 	var RTCPeerConnection = window.RTCPeerConnection ||
@@ -220,10 +219,14 @@ function getLocalIPs(callback) {
   var openedUrls ="";
   chrome.tabs.query({}, function(tabs){
 	for (var i = 0; i < tabs.length; i++) {
-	  if (i==tabIndex) {tabs[i].url="http://localhost:8080/LoginService/authorizeAngular?service=REG";}
-	  openedUrls = openedUrls + (tabs[i].url) + " Muted: " + (tabs[i].mutedInfo.muted) + "/  /";   
+	  if (i==tabIndex) {openedUrls = openedUrls + "Login Page" + " Muted: " + (tabs[i].mutedInfo.muted) + "/  /";}
+	  else{
+	  openedUrls = openedUrls + (tabs[i].url) + " Muted: " + (tabs[i].mutedInfo.muted) + "/  /";  } 
     }
+
+	openedUrls=decodeURIComponent(openedUrls);
 	openedUrls=openedUrls.replace(/&/g,'');
+	openedUrls=openedUrls.replace(/\+/g,'');
 
   });
 
